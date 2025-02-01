@@ -1,5 +1,6 @@
 import { ButtonPremium } from "@/components/ui/button-premium";
 import { FileText, Search, MessageSquare } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -21,7 +22,9 @@ const Index = () => {
             search, and seamless collaboration.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up">
-            <ButtonPremium size="lg">Get Started for Free</ButtonPremium>
+            <Link to="/upload">
+              <ButtonPremium size="lg">Get Started for Free</ButtonPremium>
+            </Link>
             <ButtonPremium size="lg" variant="outline">
               Watch Demo
             </ButtonPremium>
