@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, FileType, File } from "lucide-react";
+import { Upload as UploadIcon, FileType, File } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const Upload = () => {
+const UploadPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -68,7 +68,9 @@ const Upload = () => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <Upload className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+          <div className="w-12 h-12 mx-auto mb-4">
+            <UploadIcon className="w-full h-full text-blue-500" />
+          </div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
             Drag and drop your files here
           </h3>
@@ -122,4 +124,4 @@ const Upload = () => {
   );
 };
 
-export default Upload;
+export default UploadPage;
