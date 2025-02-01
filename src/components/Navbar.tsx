@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
 import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-blue-100">
@@ -36,7 +37,9 @@ const Navbar = () => {
             >
               Login
             </Link>
-            <ButtonPremium size="default">Get Started</ButtonPremium>
+            <ButtonPremium size="default" onClick={() => navigate('/upload')}>
+              Get Started
+            </ButtonPremium>
           </div>
 
           {/* Mobile menu button */}
@@ -78,7 +81,7 @@ const Navbar = () => {
               Login
             </Link>
             <div className="px-3 py-2">
-              <ButtonPremium size="default" className="w-full">
+              <ButtonPremium size="default" className="w-full" onClick={() => navigate('/upload')}>
                 Get Started
               </ButtonPremium>
             </div>
