@@ -1,5 +1,5 @@
 import { ButtonPremium } from "@/components/ui/button-premium";
-import { FileText, Search, MessageSquare, Rocket, Users, Brain, Clock, Slack, Discord, HelpCircle } from "lucide-react";
+import { FileText, Search, MessageSquare, Rocket, Users, Brain, Clock, Slack, MessageCircle, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -147,7 +147,7 @@ const Index = () => {
 
             <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
               <div className="w-12 h-12 bg-[#5865F2] rounded-lg flex items-center justify-center">
-                <Discord className="w-6 h-6 text-white" />
+                <MessageCircle className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Discord Integration</h3>
