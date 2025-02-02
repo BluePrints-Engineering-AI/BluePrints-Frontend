@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageSquare } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +30,13 @@ const Navbar = () => {
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Pricing
+            </Link>
+            <Link
+              to="/chat"
+              className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Try It
             </Link>
             <Link
               to="/login"
@@ -73,6 +80,13 @@ const Navbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
             >
               Pricing
+            </Link>
+            <Link
+              to="/chat"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Try It
             </Link>
             <Link
               to="/login"

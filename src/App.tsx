@@ -10,6 +10,7 @@ import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import UploadPage from "./pages/Upload";
+import ChatBot from "./pages/ChatBot";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/upload" element={<UploadPage />} />
+              <Route path="/chat" element={<ChatBot />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
