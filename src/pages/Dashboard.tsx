@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Plus, Bot, MessageSquare, Clock, Database, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -81,120 +82,129 @@ const Dashboard = () => {
   const totalMessages = chatBots.reduce((acc, bot) => acc + bot.totalMessages, 0);
   const totalUsageTime = "45h 23m";
   const totalDocuments = chatBots.reduce((acc, bot) => acc + bot.documentsCount, 0);
+  const totalStorageUsed = chatBots.reduce((acc, bot) => acc + bot.storageUsed, 0);
+  const totalStorageLimit = chatBots.reduce((acc, bot) => acc + bot.storageLimit, 0);
+  const storagePercentage = (totalStorageUsed / totalStorageLimit) * 100;
 
   return (
-    <div className="container mx-auto px-4 py-24">
+    <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-blue-50">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Button className="flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-blue-900">Dashboard</h1>
+        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Create New ChatBot
         </Button>
       </div>
 
+      {/* Storage Usage */}
+      <Card className="mb-8 bg-white shadow-lg animate-fade-up">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-lg font-medium text-blue-900">Storage Usage</CardTitle>
+          <Database className="h-4 w-4 text-blue-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Progress value={storagePercentage} className="h-2" />
+            <p className="text-sm text-gray-600">
+              {totalStorageUsed.toFixed(1)}GB / {totalStorageLimit}GB used
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card>
+        <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Messages</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-900">Total Messages</CardTitle>
+            <MessageSquare className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalMessages}</div>
+            <div className="text-2xl font-bold text-blue-900">{totalMessages}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up delay-100">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usage Time</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-900">Usage Time</CardTitle>
+            <Clock className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalUsageTime}</div>
+            <div className="text-2xl font-bold text-blue-900">{totalUsageTime}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up delay-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Documents</CardTitle>
-            <Database className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-900">Total Documents</CardTitle>
+            <Database className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalDocuments}</div>
+            <div className="text-2xl font-bold text-blue-900">{totalDocuments}</div>
           </CardContent>
         </Card>
       </div>
 
       {/* ChatBots Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {chatBots.map((bot) => (
+        {chatBots.map((bot, index) => (
           <Card 
             key={bot.id}
-            className="cursor-pointer hover:shadow-lg transition-shadow"
+            className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer animate-fade-up"
+            style={{ animationDelay: `${index * 100}ms` }}
+            onClick={() => navigate(`/chat/${bot.id}`)}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-medium">{bot.name}</CardTitle>
-              <Bot className="h-5 w-5 text-muted-foreground" />
+              <CardTitle className="text-xl font-medium text-blue-900">{bot.name}</CardTitle>
+              <Bot className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Messages:</span>
-                      <span className="font-medium">{bot.totalMessages}</span>
+                      <span className="text-gray-600">Messages:</span>
+                      <span className="font-medium text-blue-900">{bot.totalMessages}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Usage Time:</span>
-                      <span className="font-medium">{bot.usageTime}</span>
+                      <span className="text-gray-600">Usage Time:</span>
+                      <span className="font-medium text-blue-900">{bot.usageTime}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Storage:</span>
-                      <span className="font-medium">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
+                      <span className="text-gray-600">Storage:</span>
+                      <span className="font-medium text-blue-900">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Documents:</span>
-                      <span className="font-medium">{bot.documentsCount}</span>
+                      <span className="text-gray-600">Documents:</span>
+                      <span className="font-medium text-blue-900">{bot.documentsCount}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Last Used:</span>
-                      <span className="font-medium">{bot.lastUsed}</span>
+                      <span className="text-gray-600">Last Used:</span>
+                      <span className="font-medium text-blue-900">{bot.lastUsed}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium">Training Documents</h4>
+                  <h4 className="text-sm font-medium text-blue-900">Training Documents</h4>
                   <div className="space-y-1">
                     {bot.documents.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded-lg">
+                      <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4 text-blue-600" />
-                          <span>{doc.name}</span>
+                          <span className="text-blue-900">{doc.name}</span>
                         </div>
-                        <span className="text-muted-foreground">{doc.size}MB</span>
+                        <span className="text-gray-600">{doc.size}MB</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex justify-end space-x-2 pt-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => navigate(`/chat/${bot.id}`)}
-                  >
-                    Open Chat
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Handle document upload
-                    }}
-                  >
-                    Add Document
-                  </Button>
+                <div className="pt-4">
+                  <Progress 
+                    value={(bot.storageUsed / bot.storageLimit) * 100} 
+                    className="h-1.5 bg-blue-100"
+                  />
+                  <p className="text-xs text-gray-600 mt-1">Storage Usage</p>
                 </div>
               </div>
             </CardContent>
