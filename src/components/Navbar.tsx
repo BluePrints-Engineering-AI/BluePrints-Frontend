@@ -32,11 +32,11 @@ const Navbar = () => {
               Pricing
             </Link>
             <Link
-              to="/chat"
+              to="/chat/robodocs"
               className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              Try It
+              Try RoboDocs
             </Link>
             <Link
               to="/login"
@@ -82,11 +82,11 @@ const Navbar = () => {
               Pricing
             </Link>
             <Link
-              to="/chat"
+              to="/chat/robodocs"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              Try It
+              Try RoboDocs
             </Link>
             <Link
               to="/login"
