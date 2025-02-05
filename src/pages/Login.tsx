@@ -3,18 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // This is a mock login - in a real app, you'd integrate with an auth service
-    if (email && password) {
+    // Mock login - in a real app, you'd integrate with an auth service
+    if (email === "demo@blueprints.com" && password === "demo123") {
+      localStorage.setItem("isLoggedIn", "true");
       toast.success("Login successful!");
+      navigate("/dashboard");
     } else {
-      toast.error("Please fill in all fields");
+      toast.error("Invalid credentials. Use demo@blueprints.com / demo123");
     }
   };
 
@@ -37,7 +41,7 @@ const Login = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="demo@blueprints.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -49,6 +53,7 @@ const Login = () => {
                 <Input
                   id="password"
                   type="password"
+                  placeholder="demo123"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
