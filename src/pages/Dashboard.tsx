@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -87,10 +88,10 @@ const Dashboard = () => {
   const storagePercentage = (totalStorageUsed / totalStorageLimit) * 100;
 
   return (
-    <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-blue-50">
+    <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-[#0FA0CE]/5">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-blue-900">Dashboard</h1>
-        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+        <h1 className="text-3xl font-bold text-[#0FA0CE]">Dashboard</h1>
+        <Button className="flex items-center gap-2 bg-[#0FA0CE] hover:bg-[#0FA0CE]/90">
           <Plus className="w-4 h-4" /> Create New ChatBot
         </Button>
       </div>
@@ -98,12 +99,12 @@ const Dashboard = () => {
       {/* Storage Usage */}
       <Card className="mb-8 bg-white shadow-lg animate-fade-up">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-medium text-blue-900">Storage Usage</CardTitle>
-          <Database className="h-4 w-4 text-blue-600" />
+          <CardTitle className="text-lg font-medium text-[#0FA0CE]">Storage Usage</CardTitle>
+          <Database className="h-4 w-4 text-[#0FA0CE]" />
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <Progress value={storagePercentage} className="h-2" />
+            <Progress value={storagePercentage} className="h-2 bg-[#0FA0CE]/20 [&>[role=progressbar]]:bg-[#0FA0CE]" />
             <p className="text-sm text-gray-600">
               {totalStorageUsed.toFixed(1)}GB / {totalStorageLimit}GB used
             </p>
@@ -115,29 +116,29 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-900">Total Messages</CardTitle>
-            <MessageSquare className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-[#0FA0CE]">Total Messages</CardTitle>
+            <MessageSquare className="h-4 w-4 text-[#0FA0CE]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-900">{totalMessages}</div>
+            <div className="text-2xl font-bold text-[#0FA0CE]">{totalMessages}</div>
           </CardContent>
         </Card>
         <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up delay-100">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-900">Usage Time</CardTitle>
-            <Clock className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-[#0FA0CE]">Usage Time</CardTitle>
+            <Clock className="h-4 w-4 text-[#0FA0CE]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-900">{totalUsageTime}</div>
+            <div className="text-2xl font-bold text-[#0FA0CE]">{totalUsageTime}</div>
           </CardContent>
         </Card>
         <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up delay-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-900">Total Documents</CardTitle>
-            <Database className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-[#0FA0CE]">Total Documents</CardTitle>
+            <Database className="h-4 w-4 text-[#0FA0CE]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-900">{totalDocuments}</div>
+            <div className="text-2xl font-bold text-[#0FA0CE]">{totalDocuments}</div>
           </CardContent>
         </Card>
       </div>
@@ -152,8 +153,8 @@ const Dashboard = () => {
             onClick={() => navigate(`/chat/${bot.id}`)}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-medium text-blue-900">{bot.name}</CardTitle>
-              <Bot className="h-5 w-5 text-blue-600" />
+              <CardTitle className="text-xl font-medium text-[#0FA0CE]">{bot.name}</CardTitle>
+              <Bot className="h-5 w-5 text-[#0FA0CE]" />
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -161,37 +162,37 @@ const Dashboard = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Messages:</span>
-                      <span className="font-medium text-blue-900">{bot.totalMessages}</span>
+                      <span className="font-medium text-[#0FA0CE]">{bot.totalMessages}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Usage Time:</span>
-                      <span className="font-medium text-blue-900">{bot.usageTime}</span>
+                      <span className="font-medium text-[#0FA0CE]">{bot.usageTime}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Storage:</span>
-                      <span className="font-medium text-blue-900">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
+                      <span className="font-medium text-[#0FA0CE]">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Documents:</span>
-                      <span className="font-medium text-blue-900">{bot.documentsCount}</span>
+                      <span className="font-medium text-[#0FA0CE]">{bot.documentsCount}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Last Used:</span>
-                      <span className="font-medium text-blue-900">{bot.lastUsed}</span>
+                      <span className="font-medium text-[#0FA0CE]">{bot.lastUsed}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-blue-900">Training Documents</h4>
+                  <h4 className="text-sm font-medium text-[#0FA0CE]">Training Documents</h4>
                   <div className="space-y-1">
                     {bot.documents.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                      <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-[#0FA0CE]/5 rounded-lg hover:bg-[#0FA0CE]/10 transition-colors">
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-blue-600" />
-                          <span className="text-blue-900">{doc.name}</span>
+                          <FileText className="w-4 h-4 text-[#0FA0CE]" />
+                          <span className="text-[#0FA0CE]">{doc.name}</span>
                         </div>
                         <span className="text-gray-600">{doc.size}MB</span>
                       </div>
@@ -202,7 +203,7 @@ const Dashboard = () => {
                 <div className="pt-4">
                   <Progress 
                     value={(bot.storageUsed / bot.storageLimit) * 100} 
-                    className="h-1.5 bg-blue-100"
+                    className="h-1.5 bg-[#0FA0CE]/20 [&>[role=progressbar]]:bg-[#0FA0CE]"
                   />
                   <p className="text-xs text-gray-600 mt-1">Storage Usage</p>
                 </div>
