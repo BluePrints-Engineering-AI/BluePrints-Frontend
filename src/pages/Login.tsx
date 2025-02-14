@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { Github, Mail, Google } from 'lucide-react';
+import { Github, Mail, Mail as MailIcon } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -96,7 +96,7 @@ const Login = () => {
             className="w-full"
             onClick={() => handleOAuthLogin('google')}
           >
-            <Google className="mr-2 h-4 w-4" />
+            <MailIcon className="mr-2 h-4 w-4" />
             Continue with Google
           </Button>
           
