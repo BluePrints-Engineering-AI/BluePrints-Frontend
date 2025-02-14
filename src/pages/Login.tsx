@@ -1,70 +1,165 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { Github, Mail, Google } from 'lucide-react';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - in a real app, you'd integrate with an auth service
-    if (email === "demo@blueprints.com" && password === "demo123") {
-      localStorage.setItem("isLoggedIn", "true");
-      toast.success("Login successful!");
-      navigate("/dashboard");
-    } else {
-      toast.error("Invalid credentials. Use demo@blueprints.com / demo123");
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async (provider: 'github' | 'google') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+      if (error) throw error;
+      toast({
+        title: "Success",
+        description: "Check your email for the confirmation link",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-4">
-      <div className="max-w-md mx-auto">
-        <Card className="border border-blue-100">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
-            <CardDescription className="text-center">
-              Enter your email and password to login
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="demo@blueprints.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="demo123"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Sign In
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md p-6 space-y-6">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Welcome to BluePrints</h2>
+          <p className="mt-2 text-sm text-gray-600">Sign in or create an account</p>
+        </div>
+
+        <div className="space-y-4">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleOAuthLogin('google')}
+          >
+            <Google className="mr-2 h-4 w-4" />
+            Continue with Google
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleOAuthLogin('github')}
+          >
+            <Github className="mr-2 h-4 w-4" />
+            Continue with GitHub
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-4">
+              <Button type="submit" className="w-full" disabled={loading}>
+                <Mail className="mr-2 h-4 w-4" />
+                Sign in with Email
               </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleSignUp}
+                disabled={loading}
+              >
+                Create Account
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Card>
     </div>
   );
 };

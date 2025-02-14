@@ -1,11 +1,29 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
-import { Menu, X, MessageSquare } from "lucide-react";
+import { Menu, X, MessageSquare, User, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-blue-100">
@@ -38,15 +56,36 @@ const Navbar = () => {
               <MessageSquare className="w-4 h-4" />
               Try RoboDocs
             </Link>
-            <Link
-              to="/login"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Login
-            </Link>
-            <ButtonPremium size="default" onClick={() => navigate('/upload')}>
-              Get Started
-            </ButtonPremium>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
+                >
+                  <User className="w-4 h-4" />
+                  Profile
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Login
+                </Link>
+                <ButtonPremium size="default" onClick={() => navigate('/upload')}>
+                  Get Started
+                </ButtonPremium>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -88,17 +127,38 @@ const Navbar = () => {
               <MessageSquare className="w-4 h-4" />
               Try RoboDocs
             </Link>
-            <Link
-              to="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
-            >
-              Login
-            </Link>
-            <div className="px-3 py-2">
-              <ButtonPremium size="default" className="w-full" onClick={() => navigate('/upload')}>
-                Get Started
-              </ButtonPremium>
-            </div>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+                >
+                  <User className="w-4 h-4" />
+                  Profile
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                >
+                  Login
+                </Link>
+                <div className="px-3 py-2">
+                  <ButtonPremium size="default" className="w-full" onClick={() => navigate('/upload')}>
+                    Get Started
+                  </ButtonPremium>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -1,9 +1,11 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { supabase } from './integrations/supabase/client';
 import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import Features from "./pages/Features";
@@ -18,19 +20,37 @@ import Usage from "./pages/Usage";
 
 const queryClient = new QueryClient();
 
-// Mock authentication - in a real app, this would be handled by your auth service
-const isAuthenticated = () => {
-  return localStorage.getItem("isLoggedIn") === "true";
-};
-
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
-  return <>{children}</>;
-};
-
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check current auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Show loading state while checking auth
+  if (isAuthenticated === null) {
+    return null;
+  }
+
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" replace />;
+    }
+    return <>{children}</>;
+  };
+
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
@@ -38,12 +58,15 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Navbar />
+            <Navbar isAuthenticated={isAuthenticated} />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/features" element={<Features />} />
               <Route path="/pricing" element={<Pricing />} />
-              <Route path="/login" element={<Login />} />
+              <Route 
+                path="/login" 
+                element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+              />
               <Route path="/upload" element={<UploadPage />} />
               <Route
                 path="/chat/:botId"
