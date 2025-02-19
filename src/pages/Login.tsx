@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { Github, Mail, Mail as MailIcon } from 'lucide-react';
+import { Github, Mail, MessageCircle } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Login = () => {
     }
   };
 
-  const handleOAuthLogin = async (provider: 'github' | 'google') => {
+  const handleOAuthLogin = async (provider: 'github' | 'discord') => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -94,10 +94,10 @@ const Login = () => {
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => handleOAuthLogin('google')}
+            onClick={() => handleOAuthLogin('discord')}
           >
-            <MailIcon className="mr-2 h-4 w-4" />
-            Continue with Google
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Continue with Discord
           </Button>
           
           <Button

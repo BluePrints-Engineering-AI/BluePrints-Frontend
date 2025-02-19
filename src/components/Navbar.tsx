@@ -38,23 +38,17 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              to="/features"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Features
-            </Link>
-            <Link
               to="/pricing"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Pricing
             </Link>
             <Link
-              to="/chat/robodocs"
+              to="/dashboard"
               className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              Try RoboDocs
+              Dashboard
             </Link>
             {isAuthenticated ? (
               <>
@@ -81,7 +75,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
                 >
                   Login
                 </Link>
-                <ButtonPremium size="default" onClick={() => navigate('/upload')}>
+                <ButtonPremium size="default" onClick={() => navigate('/login')}>
                   Get Started
                 </ButtonPremium>
               </>
@@ -109,23 +103,17 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link
-              to="/features"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
-            >
-              Features
-            </Link>
-            <Link
               to="/pricing"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
             >
               Pricing
             </Link>
             <Link
-              to="/chat/robodocs"
+              to="/dashboard"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              Try RoboDocs
+              Dashboard
             </Link>
             {isAuthenticated ? (
               <>
@@ -153,7 +141,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
                   Login
                 </Link>
                 <div className="px-3 py-2">
-                  <ButtonPremium size="default" className="w-full" onClick={() => navigate('/upload')}>
+                  <ButtonPremium size="default" className="w-full" onClick={() => navigate('/login')}>
                     Get Started
                   </ButtonPremium>
                 </div>
