@@ -41,20 +41,29 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-sm font-medium text-gray-700 hover:text-blue-600">
+      <DropdownMenuTrigger className="text-sm font-medium text-gray-700 hover:text-blue-600 cursor-pointer">
         {userInitials}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate('/profile')}>
+        <DropdownMenuItem 
+          onClick={() => navigate('/profile')}
+          className="cursor-pointer hover:bg-gray-100"
+        >
           <Settings className="mr-2 h-4 w-4" />
           Edit Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'Free' ? 'Premium' : 'Free')}>
+        <DropdownMenuItem 
+          onClick={() => onUpdateTier(profile.tier === 'Free' ? 'Premium' : 'Free')}
+          className="cursor-pointer hover:bg-gray-100"
+        >
           Current Tier: {profile.tier}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut}>
+        <DropdownMenuItem 
+          onClick={handleSignOut}
+          className="cursor-pointer hover:bg-gray-100"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           Sign Out
         </DropdownMenuItem>
