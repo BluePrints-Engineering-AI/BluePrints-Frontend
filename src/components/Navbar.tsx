@@ -29,6 +29,20 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
     }
   };
 
+  const renderAuthButtons = () => (
+    <>
+      <Link
+        to="/login"
+        className="text-gray-600 hover:text-blue-600 transition-colors"
+      >
+        Login
+      </Link>
+      <ButtonPremium size="default" onClick={() => navigate('/login')}>
+        Get Started
+      </ButtonPremium>
+    </>
+  );
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,19 +75,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
               <MessageSquare className="w-4 h-4" />
               Dashboard
             </Link>
-            {!isAuthenticated && (
-              <>
-                <Link
-                  to="/login"
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  Login
-                </Link>
-                <ButtonPremium size="default" onClick={() => navigate('/login')}>
-                  Get Started
-                </ButtonPremium>
-              </>
-            )}
+            {!isAuthenticated && renderAuthButtons()}
           </div>
 
           {/* Mobile menu button */}

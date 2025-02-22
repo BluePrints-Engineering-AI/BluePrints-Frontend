@@ -9,69 +9,47 @@ import { ChatBotCard } from "@/components/dashboard/ChatBotCard";
 import { ChatBot } from "@/types/dashboard";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useProfile } from "@/hooks/use-profile";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [message, setMessage] = React.useState("");
+  const { profile } = useProfile(true);
 
-  // Mock data - in a real app this would come from your backend
-  const chatBots: ChatBot[] = [
-    {
-      id: "1",
-      name: "Customer Support Bot",
-      documentsCount: 5,
-      lastUsed: "2024-02-20",
-      storageUsed: 4.2,
-      storageLimit: 10,
-      totalMessages: 1234,
-      usageTime: "23h 45m",
-      documents: [
-        {
-          id: "doc1",
-          name: "Support Manual.pdf",
-          size: 2.1,
-          uploadedAt: "2024-02-15",
-        },
-        {
-          id: "doc2",
-          name: "FAQs.pdf",
-          size: 1.5,
-          uploadedAt: "2024-02-16",
-        },
-      ],
-    },
-    {
-      id: "2",
-      name: "Sales Assistant Bot",
-      documentsCount: 3,
-      lastUsed: "2024-02-21",
-      storageUsed: 3.1,
-      storageLimit: 10,
-      totalMessages: 856,
-      usageTime: "15h 30m",
-      documents: [
-        {
-          id: "doc3",
-          name: "Product Catalog.pdf",
-          size: 1.8,
-          uploadedAt: "2024-02-18",
-        },
-        {
-          id: "doc4",
-          name: "Price List.pdf",
-          size: 0.8,
-          uploadedAt: "2024-02-19",
-        },
-      ],
-    },
-  ];
+  const { data: chatbots = [] } = useQuery({
+    queryKey: ['chatbots'],
+    queryFn: async () => {
+      const { data: chatbots, error } = await supabase
+        .from('chatbots')
+        .select(`
+          *,
+          chatbot_files (*)
+        `)
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id);
 
-  const totalMessages = chatBots.reduce((acc, bot) => acc + bot.totalMessages, 0);
-  const totalUsageTime = "45h 23m";
-  const totalDocuments = chatBots.reduce((acc, bot) => acc + bot.documentsCount, 0);
-  const totalStorageUsed = chatBots.reduce((acc, bot) => acc + bot.storageUsed, 0);
-  const totalStorageLimit = chatBots.reduce((acc, bot) => acc + bot.storageLimit, 0);
-  const storagePercentage = (totalStorageUsed / totalStorageLimit) * 100;
+      if (error) throw error;
+      return chatbots;
+    },
+  });
+
+  // Calculate total storage used across all chatbot files
+  const totalStorageUsed = chatbots.reduce((acc, bot) => {
+    const botFiles = bot.chatbot_files || [];
+    return acc + botFiles.reduce((sum, file) => sum + (file.file_size || 0), 0);
+  }, 0);
+
+  // Convert bytes to GB for display
+  const storageUsedGB = totalStorageUsed / (1024 * 1024 * 1024);
+  const storageLimitGB = (profile?.storage_limit || 0) / (1024 * 1024 * 1024);
+  const storagePercentage = (storageUsedGB / storageLimitGB) * 100;
+
+  const totalMessages = chatbots.length * 100; // Example - you might want to store this in the database
+  const totalUsageTime = "45h 23m"; // Example - you might want to store this in the database
+  const totalDocuments = chatbots.reduce((acc, bot) => {
+    return acc + (bot.chatbot_files?.length || 0);
+  }, 0);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,8 +78,8 @@ const Dashboard = () => {
 
       <StorageCard 
         storagePercentage={storagePercentage}
-        totalStorageUsed={totalStorageUsed}
-        totalStorageLimit={totalStorageLimit}
+        totalStorageUsed={storageUsedGB}
+        totalStorageLimit={storageLimitGB}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -162,10 +140,21 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {chatBots.map((bot, index) => (
+        {chatbots.map((bot: any, index: number) => (
           <ChatBotCard
             key={bot.id}
-            bot={bot}
+            bot={{
+              ...bot,
+              documentsCount: bot.chatbot_files?.length || 0,
+              storageUsed: (bot.chatbot_files?.reduce((sum: number, file: any) => sum + (file.file_size || 0), 0) || 0) / (1024 * 1024 * 1024),
+              storageLimit: storageLimitGB,
+              documents: bot.chatbot_files?.map((file: any) => ({
+                id: file.id,
+                name: file.file_name,
+                size: file.file_size / (1024 * 1024), // Convert to MB
+                uploadedAt: file.uploaded_at
+              })) || []
+            }}
             index={index}
             onClick={() => navigate(`/chat/${bot.id}`)}
           />
