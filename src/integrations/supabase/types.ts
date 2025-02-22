@@ -84,7 +84,6 @@ export type Database = {
           id: string
           last_name: string | null
           provider: string | null
-          storage_limit: number | null
           tier: Database["public"]["Enums"]["user_tier"] | null
           updated_at: string | null
         }
@@ -98,7 +97,6 @@ export type Database = {
           id: string
           last_name?: string | null
           provider?: string | null
-          storage_limit?: number | null
           tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }
@@ -112,7 +110,6 @@ export type Database = {
           id?: string
           last_name?: string | null
           provider?: string | null
-          storage_limit?: number | null
           tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }

@@ -5,7 +5,6 @@ export interface Profile {
   last_name: string | null;
   company: string | null;
   tier: 'free' | 'premium';
-  storage_limit: number;
   created_at: string;
   updated_at: string | null;
   avatar_url: string | null;
