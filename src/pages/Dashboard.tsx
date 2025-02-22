@@ -1,18 +1,15 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, MessageSquare, Clock, Database, Upload, Send } from "lucide-react";
+import { Plus, MessageSquare, Clock, Database } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { StorageCard } from "@/components/dashboard/StorageCard";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { ChatBotCard } from "@/components/dashboard/ChatBotCard";
 import { ChatBot } from "@/types/dashboard";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [message, setMessage] = React.useState("");
 
   // Mock data - in a real app this would come from your backend
   const chatBots: ChatBot[] = [
@@ -73,22 +70,6 @@ const Dashboard = () => {
   const totalStorageLimit = chatBots.reduce((acc, bot) => acc + bot.storageLimit, 0);
   const storagePercentage = (totalStorageUsed / totalStorageLimit) * 100;
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Handle file upload logic here
-      console.log("Uploading file:", file.name);
-    }
-  };
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // Handle sending message to chatbot
-      console.log("Sending message:", message);
-      setMessage("");
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-[#2463EB]/5">
       <div className="flex justify-between items-center mb-8">
@@ -122,43 +103,6 @@ const Dashboard = () => {
           Icon={Database}
           className="delay-200"
         />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* File Upload Card */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
-          <div className="flex items-center gap-4">
-            <Input
-              type="file"
-              className="flex-1"
-              onChange={handleUpload}
-              accept=".pdf,.doc,.docx,.txt"
-            />
-            <Button variant="outline">
-              <Upload className="w-4 h-4 mr-2" />
-              Upload
-            </Button>
-          </div>
-        </Card>
-
-        {/* Chatbot Card */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Chat with Assistant</h2>
-          <div className="flex items-center gap-4">
-            <Input
-              type="text"
-              placeholder="Ask me anything..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleSendMessage}>
-              <Send className="w-4 h-4 mr-2" />
-              Send
-            </Button>
-          </div>
-        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

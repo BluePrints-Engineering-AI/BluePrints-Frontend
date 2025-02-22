@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -16,49 +17,36 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Usage from "./pages/Usage";
-import { UserOnboardingForm } from './components/UserOnboardingForm';
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [needsOnboarding, setNeedsOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
-    checkAuth();
+    // Check current auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setIsAuthenticated(!!session);
-
-    if (session) {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('first_name')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error) {
-        console.error('Error checking profile:', error);
-        return;
-      }
-
-      setNeedsOnboarding(!data?.first_name);
-    }
-  };
-
-  // Show loading state while checking auth and onboarding status
-  if (isAuthenticated === null || (isAuthenticated && needsOnboarding === null)) {
+  // Show loading state while checking auth
+  if (isAuthenticated === null) {
     return null;
   }
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (!isAuthenticated) {
       return <Navigate to="/login" replace />;
-    }
-    if (needsOnboarding) {
-      return <UserOnboardingForm />;
     }
     return <>{children}</>;
   };

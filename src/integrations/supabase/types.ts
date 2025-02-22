@@ -9,108 +9,32 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      chatbot_files: {
-        Row: {
-          chatbot_id: string
-          file_name: string
-          file_path: string
-          file_size: number
-          id: string
-          uploaded_at: string
-        }
-        Insert: {
-          chatbot_id: string
-          file_name: string
-          file_path: string
-          file_size: number
-          id?: string
-          uploaded_at?: string
-        }
-        Update: {
-          chatbot_id?: string
-          file_name?: string
-          file_path?: string
-          file_size?: number
-          id?: string
-          uploaded_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chatbot_files_chatbot_id_fkey"
-            columns: ["chatbot_id"]
-            isOneToOne: false
-            referencedRelation: "chatbots"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      chatbots: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chatbots_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           avatar_url: string | null
-          company: string | null
           created_at: string
           email: string | null
-          first_name: string | null
           full_name: string | null
           id: string
-          last_name: string | null
           provider: string | null
-          tier: Database["public"]["Enums"]["user_tier"] | null
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
-          company?: string | null
           created_at?: string
           email?: string | null
-          first_name?: string | null
           full_name?: string | null
           id: string
-          last_name?: string | null
           provider?: string | null
-          tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
-          company?: string | null
           created_at?: string
           email?: string | null
-          first_name?: string | null
           full_name?: string | null
           id?: string
-          last_name?: string | null
           provider?: string | null
-          tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }
         Relationships: []
@@ -123,7 +47,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      user_tier: "free" | "premium"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
