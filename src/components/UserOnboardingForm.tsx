@@ -32,7 +32,7 @@ export const UserOnboardingForm = () => {
           first_name: formData.firstName,
           last_name: formData.lastName,
           company: formData.company,
-          tier: 'free' // Set default tier
+          tier: 'Free' // Set default tier
         })
         .eq('id', user.id);
 

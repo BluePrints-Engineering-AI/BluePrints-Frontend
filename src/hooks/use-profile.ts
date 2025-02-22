@@ -32,7 +32,7 @@ export const useProfile = (isAuthenticated?: boolean) => {
     }
   };
 
-  const updateTier = async (newTier: 'free' | 'premium') => {
+  const updateTier = async (newTier: 'Free' | 'Premium') => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;

@@ -1,6 +1,7 @@
 
 import { LogOut, Settings } from "lucide-react";
 import type { Profile } from "@/types/database";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +14,11 @@ import {
 interface UserMenuProps {
   profile: Profile;
   onSignOut: () => void;
-  onUpdateTier: (newTier: 'free' | 'premium') => void;
+  onUpdateTier: (newTier: 'Free' | 'Premium') => void;
 }
 
 export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) => {
+  const navigate = useNavigate();
   const userInitials = profile?.first_name && profile?.last_name ? 
     `${profile.first_name} ${profile.last_name.charAt(0)}.` : '';
 
@@ -28,11 +30,11 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
       <DropdownMenuContent>
         <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
           <Settings className="mr-2 h-4 w-4" />
           Edit Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'free' ? 'premium' : 'free')}>
+        <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'Free' ? 'Premium' : 'Free')}>
           Current Tier: {profile.tier}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onSignOut}>
