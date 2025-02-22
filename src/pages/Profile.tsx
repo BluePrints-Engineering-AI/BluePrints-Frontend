@@ -71,6 +71,15 @@ const Profile = () => {
 
       if (error) throw error;
 
+      // Update the profile state with the new values
+      setProfile(prev => ({
+        ...prev!,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        company: formData.company,
+        updated_at: new Date().toISOString(),
+      }));
+
       toast({
         title: "Profile Updated",
         description: "Your changes have been saved successfully.",
