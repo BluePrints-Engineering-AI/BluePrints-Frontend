@@ -21,7 +21,7 @@ export const useProfile = (isAuthenticated?: boolean) => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name, last_name, tier, storage_limit')
+        .select('first_name, last_name, tier')
         .eq('id', user.id)
         .single();
 
