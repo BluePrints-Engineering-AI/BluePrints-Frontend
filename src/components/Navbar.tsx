@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
@@ -13,12 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-interface Profile {
-  first_name: string;
-  last_name: string;
-  tier: 'free' | 'premium';
-}
+import type { Profile } from "@/types/database";
 
 const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +38,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
         .single();
 
       if (error) throw error;
-      if (data) setProfile(data);
+      if (data) setProfile(data as Profile);
     } catch (error: any) {
       console.error('Error fetching profile:', error.message);
     }
@@ -91,7 +85,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
     }
   };
 
-  const userInitials = profile ? 
+  const userInitials = profile?.first_name && profile?.last_name ? 
     `${profile.first_name} ${profile.last_name.charAt(0)}.` : '';
 
   return (

@@ -44,7 +44,7 @@ const App = () => {
         return;
       }
 
-      setNeedsOnboarding(!data.first_name);
+      setNeedsOnboarding(!data?.first_name);
     }
   };
 
