@@ -31,7 +31,8 @@ export const UserOnboardingForm = () => {
         .update({
           first_name: formData.firstName,
           last_name: formData.lastName,
-          company: formData.company
+          company: formData.company,
+          tier: 'free' // Set default tier
         })
         .eq('id', user.id);
 
