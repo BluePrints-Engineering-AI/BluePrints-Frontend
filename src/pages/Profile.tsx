@@ -16,6 +16,7 @@ const Profile = () => {
     email: '',
     company: ''
   });
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -85,6 +86,16 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (profile) {
+      const isChanged = 
+        formData.first_name !== (profile.first_name || '') ||
+        formData.last_name !== (profile.last_name || '') ||
+        formData.company !== (profile.company || '');
+      setHasChanges(isChanged);
+    }
+  }, [formData, profile]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -136,7 +147,11 @@ const Profile = () => {
                 onChange={handleChange}
               />
             </div>
-            <Button type="submit" disabled={loading}>
+            <Button 
+              type="submit" 
+              disabled={loading || !hasChanges}
+              className={!hasChanges ? 'opacity-50 cursor-not-allowed' : ''}
+            >
               {loading ? 'Saving...' : 'Save Changes'}
             </Button>
           </form>
