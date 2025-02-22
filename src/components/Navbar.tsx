@@ -31,7 +31,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
   const handleDemoLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: 'demo@blueprints.com',
+        email: 'Demo@blueprints.com',
         password: 'dlue123',
       });
       if (error) throw error;
