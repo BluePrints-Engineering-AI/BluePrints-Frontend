@@ -2,6 +2,8 @@
 import { LogOut, Settings } from "lucide-react";
 import type { Profile } from "@/types/database";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +21,21 @@ interface UserMenuProps {
 
 export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
+  };
   const userInitials = profile?.first_name && profile?.last_name ? 
     `${profile.first_name} ${profile.last_name.charAt(0)}.` : '';
 
@@ -37,7 +54,7 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
         <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'Free' ? 'Premium' : 'Free')}>
           Current Tier: {profile.tier}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onSignOut}>
+        <DropdownMenuItem onClick={handleSignOut}>
           <LogOut className="mr-2 h-4 w-4" />
           Sign Out
         </DropdownMenuItem>

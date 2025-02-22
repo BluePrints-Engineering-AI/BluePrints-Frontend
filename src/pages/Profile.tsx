@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 
 const Profile = () => {
@@ -23,14 +22,6 @@ const Profile = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSave} className="space-y-6">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>JD</AvatarFallback>
-              </Avatar>
-              <Button variant="outline">Change Avatar</Button>
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium">Name</label>
               <Input defaultValue="John Doe" />
