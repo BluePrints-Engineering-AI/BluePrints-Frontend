@@ -28,9 +28,31 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
       });
     }
   };
+  const handleDemoLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: 'demo@blueprints.com',
+        password: 'dlue123',
+      });
+      if (error) throw error;
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing in",
+        description: error.message,
+      });
+    }
+  };
 
   const renderAuthButtons = () => (
     <>
+      <button
+        className="text-gray-600 hover:text-blue-600 transition-colors outline"
+        onClick={handleDemoLogin}
+      >
+        Try Demo
+      </button>
       <Link
         to="/login"
         className="text-gray-600 hover:text-blue-600 transition-colors"
