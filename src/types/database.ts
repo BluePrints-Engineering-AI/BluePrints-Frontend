@@ -8,7 +8,6 @@ export interface Profile {
   storage_limit: number;
   created_at: string;
   updated_at: string | null;
-  avatar_url: string | null;
   email: string | null;
   provider: string | null;
 }
