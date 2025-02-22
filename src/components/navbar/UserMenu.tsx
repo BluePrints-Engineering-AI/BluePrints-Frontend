@@ -27,7 +27,7 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      navigate('/');
+      window.location.href = '/';
     } catch (error: any) {
       toast({
         variant: "destructive",
