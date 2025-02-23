@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Bot, FileText, Send, Upload } from "lucide-react";
+import { Bot, FileText, Send, Upload, Edit2, Check, X } from "lucide-react";
 import { ChatBot } from "@/types/database";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ interface ChatBotCardProps {
 export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
   const [message, setMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(bot.name);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -64,13 +66,75 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
     setMessage("");
   };
 
+  const handleUpdateName = async () => {
+    try {
+      const { error } = await supabase
+        .from('chatbots')
+        .update({ name: newName })
+        .eq('id', bot.id);
+
+      if (error) throw error;
+
+      toast.success('Chatbot name updated successfully');
+      setIsEditing(false);
+    } catch (error: any) {
+      toast.error('Failed to update name: ' + error.message);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setNewName(bot.name);
+    setIsEditing(false);
+  };
+
   return (
     <Card 
       className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-up"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xl font-medium text-[#2463EB]">{bot.name}</CardTitle>
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <div className="flex items-center gap-2">
+              <Input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="h-8"
+                autoFocus
+              />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleUpdateName}
+                className="h-8 w-8 p-0"
+              >
+                <Check className="h-4 w-4 text-green-500" />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleCancelEdit}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4 text-red-500" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <CardTitle className="text-xl font-medium text-[#2463EB]">
+                {bot.name}
+              </CardTitle>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setIsEditing(true)}
+                className="h-8 w-8 p-0"
+              >
+                <Edit2 className="h-4 w-4 text-gray-400 hover:text-[#2463EB]" />
+              </Button>
+            </>
+          )}
+        </div>
         <Bot className="h-5 w-5 text-[#2463EB]" />
       </CardHeader>
       <CardContent>

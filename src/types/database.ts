@@ -4,7 +4,7 @@ export interface Profile {
   first_name: string | null;
   last_name: string | null;
   company: string | null;
-  tier: 'free' | 'premium';
+  tier: 'free' | 'premium';  // Note: this is lowercase
   storage_limit: number;
   created_at: string;
   updated_at: string | null;
