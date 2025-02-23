@@ -123,7 +123,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      user_tier: "Free" | "Premium"
+      user_tier: "free" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never

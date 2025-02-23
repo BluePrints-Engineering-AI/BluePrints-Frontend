@@ -1,21 +1,73 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Bot, FileText } from "lucide-react";
+import { Bot, FileText, Send, Upload } from "lucide-react";
 import { ChatBot } from "@/types/dashboard";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface ChatBotCardProps {
   bot: ChatBot;
-  onClick: () => void;
   index: number;
 }
 
-export const ChatBotCard = ({ bot, onClick, index }: ChatBotCardProps) => {
+export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
+  const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Upload file to storage
+      const filePath = `${user.id}/${bot.id}/${crypto.randomUUID()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('chatbot_files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Create file record in database
+      const { error: dbError } = await supabase
+        .from('chatbot_files')
+        .insert({
+          chatbot_id: bot.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+        });
+
+      if (dbError) throw dbError;
+
+      toast.success('File uploaded successfully');
+      // Trigger a refetch of the chatbots data
+      window.location.reload();
+    } catch (error: any) {
+      toast.error('Failed to upload file: ' + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!message.trim()) return;
+    // Implement chat functionality here
+    console.log(`Sending message to ${bot.name}:`, message);
+    setMessage("");
+  };
+
   return (
     <Card 
-      className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer animate-fade-up"
+      className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-up"
       style={{ animationDelay: `${index * 100}ms` }}
-      onClick={onClick}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-medium text-[#2463EB]">{bot.name}</CardTitle>
@@ -23,54 +75,65 @@ export const ChatBotCard = ({ bot, onClick, index }: ChatBotCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Messages:</span>
-                <span className="font-medium text-[#2463EB]">{bot.totalMessages}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Usage Time:</span>
-                <span className="font-medium text-[#2463EB]">{bot.usageTime}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Storage:</span>
-                <span className="font-medium text-[#2463EB]">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Documents:</span>
-                <span className="font-medium text-[#2463EB]">{bot.documentsCount}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Last Used:</span>
-                <span className="font-medium text-[#2463EB]">{bot.lastUsed}</span>
-              </div>
+          {/* File Upload Section */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[#2463EB]">Upload Documents</label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="file"
+                className="flex-1"
+                onChange={handleFileUpload}
+                accept=".pdf,.doc,.docx,.txt"
+                disabled={isUploading}
+              />
+              <Button variant="outline" disabled={isUploading}>
+                <Upload className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
+          {/* Documents List */}
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-[#2463EB]">Training Documents</h4>
             <div className="space-y-1">
               {bot.documents.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-[#2463EB]/5 rounded-lg hover:bg-[#2463EB]/10 transition-colors">
+                <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-[#2463EB]/5 rounded-lg">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#2463EB]" />
                     <span className="text-[#2463EB]">{doc.name}</span>
                   </div>
-                  <span className="text-gray-600">{doc.size}MB</span>
+                  <span className="text-gray-600">{doc.size.toFixed(2)}MB</span>
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Chat Section */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[#2463EB]">Chat with Bot</label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="text"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-1"
+              />
+              <Button onClick={handleSendMessage}>
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Storage Usage */}
           <div className="pt-4">
             <Progress 
               value={(bot.storageUsed / bot.storageLimit) * 100} 
               className="h-1.5 bg-[#2463EB]/20 [&>[role=progressbar]]:bg-[#2463EB]"
             />
-            <p className="text-xs text-gray-600 mt-1">Storage Usage</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Storage: {bot.storageUsed.toFixed(2)}GB / {bot.storageLimit.toFixed(2)}GB
+            </p>
           </div>
         </div>
       </CardContent>

@@ -1,24 +1,19 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, MessageSquare, Clock, Database, Upload, Send } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Plus, MessageSquare, Clock, Database } from "lucide-react";
 import { StorageCard } from "@/components/dashboard/StorageCard";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { ChatBotCard } from "@/components/dashboard/ChatBotCard";
-import { ChatBot } from "@/types/dashboard";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { useProfile } from "@/hooks/use-profile";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [message, setMessage] = React.useState("");
   const { profile } = useProfile(true);
 
-  const { data: chatbots = [] } = useQuery({
+  const { data: chatbots = [], refetch: refetchChatbots } = useQuery({
     queryKey: ['chatbots'],
     queryFn: async () => {
       const { data: chatbots, error } = await supabase
@@ -34,6 +29,29 @@ const Dashboard = () => {
     },
   });
 
+  const handleCreateChatbot = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('chatbots')
+        .insert({
+          name: `ChatBot ${chatbots.length + 1}`,
+          user_id: user.id
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast.success('Chatbot created successfully');
+      refetchChatbots();
+    } catch (error: any) {
+      toast.error('Failed to create chatbot: ' + error.message);
+    }
+  };
+
   // Calculate total storage used across all chatbot files
   const totalStorageUsed = chatbots.reduce((acc, bot) => {
     const botFiles = bot.chatbot_files || [];
@@ -45,33 +63,18 @@ const Dashboard = () => {
   const storageLimitGB = (profile?.storage_limit || 0) / (1024 * 1024 * 1024);
   const storagePercentage = (storageUsedGB / storageLimitGB) * 100;
 
-  const totalMessages = chatbots.length * 100; // Example - you might want to store this in the database
-  const totalUsageTime = "45h 23m"; // Example - you might want to store this in the database
   const totalDocuments = chatbots.reduce((acc, bot) => {
     return acc + (bot.chatbot_files?.length || 0);
   }, 0);
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Handle file upload logic here
-      console.log("Uploading file:", file.name);
-    }
-  };
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // Handle sending message to chatbot
-      console.log("Sending message:", message);
-      setMessage("");
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-[#2463EB]/5">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-[#2463EB]">Dashboard</h1>
-        <Button className="flex items-center gap-2 bg-[#2463EB] hover:bg-[#2463EB]/90">
+        <Button 
+          onClick={handleCreateChatbot}
+          className="flex items-center gap-2 bg-[#2463EB] hover:bg-[#2463EB]/90"
+        >
           <Plus className="w-4 h-4" /> Create New ChatBot
         </Button>
       </div>
@@ -85,12 +88,12 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatsCard 
           title="Total Messages" 
-          value={totalMessages} 
+          value={chatbots.length} 
           Icon={MessageSquare} 
         />
         <StatsCard 
           title="Usage Time" 
-          value={totalUsageTime} 
+          value="Active" 
           Icon={Clock}
           className="delay-100"
         />
@@ -100,43 +103,6 @@ const Dashboard = () => {
           Icon={Database}
           className="delay-200"
         />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* File Upload Card */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
-          <div className="flex items-center gap-4">
-            <Input
-              type="file"
-              className="flex-1"
-              onChange={handleUpload}
-              accept=".pdf,.doc,.docx,.txt"
-            />
-            <Button variant="outline">
-              <Upload className="w-4 h-4 mr-2" />
-              Upload
-            </Button>
-          </div>
-        </Card>
-
-        {/* Chatbot Card */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Chat with Assistant</h2>
-          <div className="flex items-center gap-4">
-            <Input
-              type="text"
-              placeholder="Ask me anything..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleSendMessage}>
-              <Send className="w-4 h-4 mr-2" />
-              Send
-            </Button>
-          </div>
-        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -156,7 +122,6 @@ const Dashboard = () => {
               })) || []
             }}
             index={index}
-            onClick={() => navigate(`/chat/${bot.id}`)}
           />
         ))}
       </div>
