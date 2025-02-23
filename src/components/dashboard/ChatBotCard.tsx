@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Bot, FileText, Send, Upload } from "lucide-react";
-import { ChatBot } from "@/types/dashboard";
+import { ChatBot } from "@/types/database";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -96,7 +96,7 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-[#2463EB]">Training Documents</h4>
             <div className="space-y-1">
-              {bot.documents.map((doc) => (
+              {bot.documents?.map((doc) => (
                 <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-[#2463EB]/5 rounded-lg">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#2463EB]" />
@@ -128,11 +128,11 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
           {/* Storage Usage */}
           <div className="pt-4">
             <Progress 
-              value={(bot.storageUsed / bot.storageLimit) * 100} 
+              value={(bot.storageUsed || 0) / (bot.storageLimit || 1) * 100} 
               className="h-1.5 bg-[#2463EB]/20 [&>[role=progressbar]]:bg-[#2463EB]"
             />
             <p className="text-xs text-gray-600 mt-1">
-              Storage: {bot.storageUsed.toFixed(2)}GB / {bot.storageLimit.toFixed(2)}GB
+              Storage: {(bot.storageUsed || 0).toFixed(2)}GB / {(bot.storageLimit || 0).toFixed(2)}GB
             </p>
           </div>
         </div>
