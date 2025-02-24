@@ -19,7 +19,14 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Clear any stored session data
+      await supabase.auth.clearSession();
+      
+      // Navigate to home and reload the page to clear all state
       navigate('/');
+      window.location.reload();
+      
       toast({
         title: "Signed out successfully",
       });

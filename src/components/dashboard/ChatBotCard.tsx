@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChatBot } from "@/types/database";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +9,13 @@ import { DocumentsList } from "./chatbot-card/DocumentsList";
 import { ChatInput } from "./chatbot-card/ChatInput";
 import { StorageUsage } from "./chatbot-card/StorageUsage";
 
+interface Message {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  created_at: string;
+}
+
 interface ChatBotCardProps {
   bot: ChatBot;
   index: number;
@@ -19,9 +25,29 @@ interface ChatBotCardProps {
 
 export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps) => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(bot.name);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('chat_messages')
+          .select('*')
+          .eq('chatbot_id', bot.id)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        setMessages(data || []);
+      } catch (error: any) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+  }, [bot.id]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -81,10 +107,42 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!message.trim()) return;
-    console.log(`Sending message to ${bot.name}:`, message);
-    setMessage("");
+
+    try {
+      const { data: userMessage, error: userError } = await supabase
+        .from('chat_messages')
+        .insert({
+          chatbot_id: bot.id,
+          content: message.trim(),
+          role: 'user'
+        })
+        .select()
+        .single();
+
+      if (userError) throw userError;
+
+      setMessages(prev => [...prev, userMessage]);
+      
+      setMessage("");
+
+      const { data: botMessage, error: botError } = await supabase
+        .from('chat_messages')
+        .insert({
+          chatbot_id: bot.id,
+          content: "I am a chatbot assistant. How can I help you today?",
+          role: 'assistant'
+        })
+        .select()
+        .single();
+
+      if (botError) throw botError;
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error: any) {
+      toast.error('Failed to send message: ' + error.message);
+    }
   };
 
   const handleDelete = async () => {
@@ -128,6 +186,29 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
             onFileUpload={handleFileUpload}
           />
           <DocumentsList documents={bot.documents} />
+          
+          <div className="space-y-2">
+            <div className="h-48 overflow-y-auto space-y-2 p-2 bg-gray-50 rounded-lg">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`p-2 rounded-lg ${
+                    msg.role === 'user' 
+                      ? 'bg-blue-100 ml-auto max-w-[80%]' 
+                      : 'bg-gray-100 mr-auto max-w-[80%]'
+                  }`}
+                >
+                  {msg.content}
+                </div>
+              ))}
+              {messages.length === 0 && (
+                <div className="text-center text-gray-500 py-4">
+                  No messages yet. Start a conversation!
+                </div>
+              )}
+            </div>
+          </div>
+          
           <ChatInput
             message={message}
             onMessageChange={setMessage}
