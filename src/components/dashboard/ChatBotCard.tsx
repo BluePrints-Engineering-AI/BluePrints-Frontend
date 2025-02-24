@@ -2,19 +2,32 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Bot, FileText, Send, Upload, Edit2, Check, X } from "lucide-react";
+import { Bot, FileText, Send, Upload, Edit2, Check, X, Trash2 } from "lucide-react";
 import { ChatBot } from "@/types/database";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ChatBotCardProps {
   bot: ChatBot;
   index: number;
+  onUpdate: (id: string, updates: Partial<ChatBot>) => void;
+  onDelete: (id: string) => void;
 }
 
-export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
+export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps) => {
   const [message, setMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -67,6 +80,11 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
   };
 
   const handleUpdateName = async () => {
+    if (!newName.trim()) {
+      toast.error('Name cannot be empty');
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('chatbots')
@@ -75,10 +93,27 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
 
       if (error) throw error;
 
+      onUpdate(bot.id, { name: newName });
       toast.success('Chatbot name updated successfully');
       setIsEditing(false);
     } catch (error: any) {
       toast.error('Failed to update name: ' + error.message);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const { error } = await supabase
+        .from('chatbots')
+        .delete()
+        .eq('id', bot.id);
+
+      if (error) throw error;
+
+      onDelete(bot.id);
+      toast.success('Chatbot deleted successfully');
+    } catch (error: any) {
+      toast.error('Failed to delete chatbot: ' + error.message);
     }
   };
 
@@ -135,7 +170,34 @@ export const ChatBotCard = ({ bot, index }: ChatBotCardProps) => {
             </>
           )}
         </div>
-        <Bot className="h-5 w-5 text-[#2463EB]" />
+        <div className="flex items-center gap-2">
+          <Bot className="h-5 w-5 text-[#2463EB]" />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+              >
+                <Trash2 className="h-4 w-4 text-gray-400 hover:text-red-500" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Chatbot</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete {bot.name}? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-600">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

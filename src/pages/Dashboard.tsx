@@ -7,11 +7,13 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { ChatBotCard } from "@/components/dashboard/ChatBotCard";
 import { useProfile } from "@/hooks/use-profile";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { ChatBot } from "@/types/database";
 
 const Dashboard = () => {
   const { profile } = useProfile(true);
+  const queryClient = useQueryClient();
 
   const { data: chatbots = [], refetch: refetchChatbots } = useQuery({
     queryKey: ['chatbots'],
@@ -50,6 +52,20 @@ const Dashboard = () => {
     } catch (error: any) {
       toast.error('Failed to create chatbot: ' + error.message);
     }
+  };
+
+  const handleUpdateChatbot = (id: string, updates: Partial<ChatBot>) => {
+    queryClient.setQueryData(['chatbots'], (oldData: any) => {
+      return oldData.map((bot: ChatBot) =>
+        bot.id === id ? { ...bot, ...updates } : bot
+      );
+    });
+  };
+
+  const handleDeleteChatbot = (id: string) => {
+    queryClient.setQueryData(['chatbots'], (oldData: any) => {
+      return oldData.filter((bot: ChatBot) => bot.id !== id);
+    });
   };
 
   // Calculate total storage used across all chatbot files
@@ -122,6 +138,8 @@ const Dashboard = () => {
               })) || []
             }}
             index={index}
+            onUpdate={handleUpdateChatbot}
+            onDelete={handleDeleteChatbot}
           />
         ))}
       </div>
