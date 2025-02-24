@@ -20,6 +20,9 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       navigate('/');
+      toast({
+        title: "Signed out successfully",
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -35,7 +38,10 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
-              <Link to="/" className="text-xl font-semibold text-blue-600 pl-0">
+              <Link 
+                to={isAuthenticated ? "/dashboard" : "/"} 
+                className="text-xl font-semibold text-blue-600 pl-0"
+              >
                 BluePrints
               </Link>
               {isAuthenticated && profile && (
