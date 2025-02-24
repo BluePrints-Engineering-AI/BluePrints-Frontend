@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChatBot, ChatMessage } from "@/types/database";
@@ -28,12 +29,12 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
       try {
         const { data, error } = await supabase
           .from('chat_messages')
-          .select('*')
+          .select('id, content, role, created_at, chatbot_id')
           .eq('chatbot_id', bot.id)
           .order('created_at', { ascending: true });
 
         if (error) throw error;
-        setMessages(data as ChatMessage[] || []);
+        setMessages(data as ChatMessage[]);
       } catch (error: any) {
         console.error('Error fetching messages:', error);
       }
@@ -109,15 +110,14 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
         .insert({
           chatbot_id: bot.id,
           content: message.trim(),
-          role: 'user'
+          role: 'user' as const
         })
-        .select()
+        .select('id, content, role, created_at, chatbot_id')
         .single();
 
       if (userError) throw userError;
 
       setMessages(prev => [...prev, userMessage as ChatMessage]);
-      
       setMessage("");
 
       const { data: botMessage, error: botError } = await supabase
@@ -125,9 +125,9 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
         .insert({
           chatbot_id: bot.id,
           content: "I am a chatbot assistant. How can I help you today?",
-          role: 'assistant'
+          role: 'assistant' as const
         })
-        .select()
+        .select('id, content, role, created_at, chatbot_id')
         .single();
 
       if (botError) throw botError;
