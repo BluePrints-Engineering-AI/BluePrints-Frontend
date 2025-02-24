@@ -4,7 +4,7 @@ export interface Profile {
   first_name: string | null;
   last_name: string | null;
   company: string | null;
-  tier: 'free' | 'premium';  // Note: this is lowercase
+  tier: 'free' | 'premium';
   storage_limit: number;
   created_at: string;
   updated_at: string | null;
@@ -38,4 +38,12 @@ export interface ChatBotFile {
   file_path: string;
   file_size: number;
   uploaded_at: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  created_at: string;
+  chatbot_id: string;
 }

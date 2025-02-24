@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
@@ -19,9 +18,6 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
-      // Clear any stored session data
-      await supabase.auth.clearSession();
       
       // Navigate to home and reload the page to clear all state
       navigate('/');

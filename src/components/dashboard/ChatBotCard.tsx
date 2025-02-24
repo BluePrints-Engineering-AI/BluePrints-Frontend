@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChatBot } from "@/types/database";
+import { ChatBot, ChatMessage } from "@/types/database";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatBotHeader } from "./chatbot-card/ChatBotHeader";
@@ -8,13 +8,6 @@ import { FileUpload } from "./chatbot-card/FileUpload";
 import { DocumentsList } from "./chatbot-card/DocumentsList";
 import { ChatInput } from "./chatbot-card/ChatInput";
 import { StorageUsage } from "./chatbot-card/StorageUsage";
-
-interface Message {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  created_at: string;
-}
 
 interface ChatBotCardProps {
   bot: ChatBot;
@@ -25,7 +18,7 @@ interface ChatBotCardProps {
 
 export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps) => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(bot.name);
@@ -40,7 +33,7 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
           .order('created_at', { ascending: true });
 
         if (error) throw error;
-        setMessages(data || []);
+        setMessages(data as ChatMessage[] || []);
       } catch (error: any) {
         console.error('Error fetching messages:', error);
       }
@@ -123,7 +116,7 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
 
       if (userError) throw userError;
 
-      setMessages(prev => [...prev, userMessage]);
+      setMessages(prev => [...prev, userMessage as ChatMessage]);
       
       setMessage("");
 
@@ -139,7 +132,7 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
 
       if (botError) throw botError;
 
-      setMessages(prev => [...prev, botMessage]);
+      setMessages(prev => [...prev, botMessage as ChatMessage]);
     } catch (error: any) {
       toast.error('Failed to send message: ' + error.message);
     }
