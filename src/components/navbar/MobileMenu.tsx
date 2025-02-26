@@ -21,27 +21,20 @@ export const MobileMenu = ({ isOpen, isAuthenticated, onNavigate }: MobileMenuPr
         >
           Pricing
         </Link>
-        <Link
-          to="/dashboard"
-          className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
-        >
-          <MessageSquare className="w-4 h-4" />
-          Dashboard
-        </Link>
-        {!isAuthenticated && (
-          <>
-            <Link
-              to="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
-            >
-              Login
-            </Link>
-            <div className="px-3 py-2">
-              <ButtonPremium size="default" className="w-full" onClick={() => onNavigate('/login')}>
-                Get Started
-              </ButtonPremium>
-            </div>
-          </>
+        {isAuthenticated ? (
+          <Link
+            to="/dashboard"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Dashboard
+          </Link>
+        ) : (
+          <div className="px-3 py-2">
+            <ButtonPremium size="default" className="w-full" onClick={() => onNavigate('/login')}>
+              Get Started
+            </ButtonPremium>
+          </div>
         )}
       </div>
     </div>

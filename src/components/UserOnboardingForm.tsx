@@ -1,99 +1,100 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+const formSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  company: z.string().optional(),
+});
 
-export const UserOnboardingForm = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    company: ''
+export function UserOnboardingForm({ onComplete }: { onComplete: () => void }) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      company: "",
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      if (!user) throw new Error("No user found");
 
       const { error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .update({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          company: formData.company,
-          tier: 'free' // Set default tier
+          first_name: values.firstName,
+          last_name: values.lastName,
+          company: values.company || null,
+          tier: 'free' as const,
         })
-        .eq('id', user.id);
+        .eq("id", user.id);
 
       if (error) throw error;
-
-      navigate('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message
-      });
-    } finally {
-      setLoading(false);
+      onComplete();
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md p-6 space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Complete Your Profile</h2>
-          <p className="mt-2 text-sm text-gray-600">Please provide some additional information</p>
-        </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              value={formData.firstName}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-              required
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              value={formData.lastName}
-              onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-              required
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="company"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
-            <Input
-              id="company"
-              value={formData.company}
-              onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
-              required
-            />
-          </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full">
             Complete Profile
           </Button>
         </form>
-      </Card>
+      </Form>
     </div>
   );
 };

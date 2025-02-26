@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Profile } from "@/types/database";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export const useProfile = (isAuthenticated?: boolean) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -21,7 +21,7 @@ export const useProfile = (isAuthenticated?: boolean) => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name, last_name, tier')
+        .select('*')
         .eq('id', user.id)
         .single();
 

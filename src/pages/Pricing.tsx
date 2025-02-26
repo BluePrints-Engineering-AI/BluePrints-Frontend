@@ -1,3 +1,4 @@
+
 import { Check } from "lucide-react";
 import { ButtonPremium } from "@/components/ui/button-premium";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,39 +6,28 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 const Pricing = () => {
   const plans = [
     {
-      name: "Basic",
-      price: "Free",
+      name: "Free",
+      price: "$0",
+      period: "forever",
       description: "Perfect for getting started",
       features: [
-        "Up to 10 documents per month",
+        "Up to 3 chatbots",
+        "1GB storage per chatbot",
         "Basic document processing",
         "Email support",
-        "1GB storage"
       ]
     },
     {
-      name: "Pro",
+      name: "Premium",
       price: "$9.99",
       period: "per month",
-      description: "Best for professionals",
+      description: "For power users",
       features: [
-        "Unlimited documents",
+        "Unlimited chatbots",
+        "10GB storage per chatbot",
         "Advanced document processing",
         "Priority support",
-        "10GB storage",
-        "Custom workflows"
-      ]
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      description: "For large organizations",
-      features: [
-        "Unlimited everything",
-        "24/7 priority support",
-        "Custom integration",
-        "Unlimited storage",
-        "Advanced security",
+        "Custom workflows",
         "API access"
       ]
     }
@@ -55,9 +45,9 @@ const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
-            <Card key={index} className="border border-blue-100">
+            <Card key={index} className={`border ${plan.name === 'Premium' ? 'border-blue-200 shadow-blue-100' : 'border-blue-100'}`}>
               <CardHeader>
                 <CardTitle>{plan.name}</CardTitle>
                 <CardDescription>{plan.description}</CardDescription>
@@ -80,7 +70,7 @@ const Pricing = () => {
               </CardContent>
               <CardFooter>
                 <ButtonPremium className="w-full">
-                  {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
+                  Get Started with {plan.name}
                 </ButtonPremium>
               </CardFooter>
             </Card>

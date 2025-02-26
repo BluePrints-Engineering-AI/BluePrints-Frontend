@@ -1,13 +1,13 @@
 
-import { LogOut, Settings } from "lucide-react";
+import { Settings, LogOut, ChevronDown, User } from "lucide-react";
 import type { Profile } from "@/types/database";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 interface UserMenuProps {
@@ -17,27 +17,26 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) => {
-  const userInitials = profile?.first_name && profile?.last_name ? 
-    `${profile.first_name} ${profile.last_name.charAt(0)}.` : '';
-
+  const navigate = useNavigate();
+  
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-sm font-medium text-gray-700 hover:text-blue-600">
-        {userInitials}
+      <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+        <span className="text-gray-700">{profile.first_name || 'User'}</span>
+        <ChevronDown className="w-4 h-4 text-gray-500" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          Edit Profile
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <User className="mr-2 h-5 w-5" />
+          <span>Edit Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'free' ? 'premium' : 'free')}>
-          Current Tier: {profile.tier}
+          <Settings className="mr-2 h-5 w-5" />
+          <span>Switch to {profile.tier === 'free' ? 'Premium' : 'Free'}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign Out
+          <LogOut className="mr-2 h-5 w-5" />
+          <span>Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

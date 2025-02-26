@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          chatbot_id: string
+          content: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          chatbot_id: string
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          chatbot_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_chatbot_id_fkey"
+            columns: ["chatbot_id"]
+            isOneToOne: false
+            referencedRelation: "chatbots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chatbot_files: {
         Row: {
           chatbot_id: string
@@ -75,7 +107,6 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
           company: string | null
           created_at: string
           email: string | null
@@ -84,11 +115,11 @@ export type Database = {
           id: string
           last_name: string | null
           provider: string | null
+          storage_limit: number | null
           tier: Database["public"]["Enums"]["user_tier"] | null
           updated_at: string | null
         }
         Insert: {
-          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -97,11 +128,11 @@ export type Database = {
           id: string
           last_name?: string | null
           provider?: string | null
+          storage_limit?: number | null
           tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }
         Update: {
-          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -110,6 +141,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           provider?: string | null
+          storage_limit?: number | null
           tier?: Database["public"]["Enums"]["user_tier"] | null
           updated_at?: string | null
         }
