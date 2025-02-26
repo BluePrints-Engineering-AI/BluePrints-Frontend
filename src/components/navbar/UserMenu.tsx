@@ -34,7 +34,6 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
           <Settings className="mr-2 h-5 w-5" />
           <span>Switch to {profile.tier === 'free' ? 'Premium' : 'Free'}</span>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onSignOut}>
           <LogOut className="mr-2 h-5 w-5" />
           <span>Sign out</span>
