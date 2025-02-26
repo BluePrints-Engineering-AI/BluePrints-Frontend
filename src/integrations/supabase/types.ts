@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          chatbot_id: string
+          content: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          chatbot_id: string
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          chatbot_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_chatbot_id_fkey"
+            columns: ["chatbot_id"]
+            isOneToOne: false
+            referencedRelation: "chatbots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chatbot_files: {
         Row: {
           chatbot_id: string
@@ -75,7 +107,6 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
           company: string | null
           created_at: string
           email: string | null
@@ -89,7 +120,6 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -103,7 +133,6 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -126,7 +155,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      user_tier: "Free" | "Premium"
+      user_tier: "free" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never

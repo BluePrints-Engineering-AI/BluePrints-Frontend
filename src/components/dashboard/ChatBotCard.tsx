@@ -1,77 +1,216 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Bot, FileText } from "lucide-react";
-import { ChatBot } from "@/types/dashboard";
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChatBot, ChatMessage } from "@/types/database";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { ChatBotHeader } from "./chatbot-card/ChatBotHeader";
+import { FileUpload } from "./chatbot-card/FileUpload";
+import { DocumentsList } from "./chatbot-card/DocumentsList";
+import { ChatInput } from "./chatbot-card/ChatInput";
+import { StorageUsage } from "./chatbot-card/StorageUsage";
 
 interface ChatBotCardProps {
   bot: ChatBot;
-  onClick: () => void;
   index: number;
+  onUpdate: (id: string, updates: Partial<ChatBot>) => void;
+  onDelete: (id: string) => void;
 }
 
-export const ChatBotCard = ({ bot, onClick, index }: ChatBotCardProps) => {
+export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps) => {
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(bot.name);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('chat_messages')
+          .select('id, content, role, created_at, chatbot_id')
+          .eq('chatbot_id', bot.id)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        setMessages(data as ChatMessage[]);
+      } catch (error: any) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+  }, [bot.id]);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const filePath = `${user.id}/${bot.id}/${crypto.randomUUID()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('chatbot_files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await supabase
+        .from('chatbot_files')
+        .insert({
+          chatbot_id: bot.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+        });
+
+      if (dbError) throw dbError;
+
+      toast.success('File uploaded successfully');
+      window.location.reload();
+    } catch (error: any) {
+      toast.error('Failed to upload file: ' + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleUpdateName = async () => {
+    if (!newName.trim()) {
+      toast.error('Name cannot be empty');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('chatbots')
+        .update({ name: newName })
+        .eq('id', bot.id);
+
+      if (error) throw error;
+
+      onUpdate(bot.id, { name: newName });
+      toast.success('Chatbot name updated successfully');
+      setIsEditing(false);
+    } catch (error: any) {
+      toast.error('Failed to update name: ' + error.message);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) return;
+
+    try {
+      const { data: userMessage, error: userError } = await supabase
+        .from('chat_messages')
+        .insert({
+          chatbot_id: bot.id,
+          content: message.trim(),
+          role: 'user' as const
+        })
+        .select('id, content, role, created_at, chatbot_id')
+        .single();
+
+      if (userError) throw userError;
+
+      setMessages(prev => [...prev, userMessage as ChatMessage]);
+      setMessage("");
+
+      const { data: botMessage, error: botError } = await supabase
+        .from('chat_messages')
+        .insert({
+          chatbot_id: bot.id,
+          content: "I am a chatbot assistant. How can I help you today?",
+          role: 'assistant' as const
+        })
+        .select('id, content, role, created_at, chatbot_id')
+        .single();
+
+      if (botError) throw botError;
+
+      setMessages(prev => [...prev, botMessage as ChatMessage]);
+    } catch (error: any) {
+      toast.error('Failed to send message: ' + error.message);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const { error } = await supabase
+        .from('chatbots')
+        .delete()
+        .eq('id', bot.id);
+
+      if (error) throw error;
+
+      onDelete(bot.id);
+      toast.success('Chatbot deleted successfully');
+    } catch (error: any) {
+      toast.error('Failed to delete chatbot: ' + error.message);
+    }
+  };
+
   return (
     <Card 
-      className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer animate-fade-up"
+      className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-up"
       style={{ animationDelay: `${index * 100}ms` }}
-      onClick={onClick}
     >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xl font-medium text-[#2463EB]">{bot.name}</CardTitle>
-        <Bot className="h-5 w-5 text-[#2463EB]" />
-      </CardHeader>
+      <ChatBotHeader
+        name={bot.name}
+        isEditing={isEditing}
+        newName={newName}
+        onEdit={() => setIsEditing(true)}
+        onUpdate={handleUpdateName}
+        onCancel={() => {
+          setNewName(bot.name);
+          setIsEditing(false);
+        }}
+        onDelete={handleDelete}
+        onNameChange={setNewName}
+      />
       <CardContent>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Messages:</span>
-                <span className="font-medium text-[#2463EB]">{bot.totalMessages}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Usage Time:</span>
-                <span className="font-medium text-[#2463EB]">{bot.usageTime}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Storage:</span>
-                <span className="font-medium text-[#2463EB]">{bot.storageUsed}GB / {bot.storageLimit}GB</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Documents:</span>
-                <span className="font-medium text-[#2463EB]">{bot.documentsCount}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Last Used:</span>
-                <span className="font-medium text-[#2463EB]">{bot.lastUsed}</span>
-              </div>
-            </div>
-          </div>
-
+          <FileUpload
+            isUploading={isUploading}
+            onFileUpload={handleFileUpload}
+          />
+          <DocumentsList documents={bot.documents} />
+          
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-[#2463EB]">Training Documents</h4>
-            <div className="space-y-1">
-              {bot.documents.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between text-sm p-2 bg-[#2463EB]/5 rounded-lg hover:bg-[#2463EB]/10 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#2463EB]" />
-                    <span className="text-[#2463EB]">{doc.name}</span>
-                  </div>
-                  <span className="text-gray-600">{doc.size}MB</span>
+            <div className="h-48 overflow-y-auto space-y-2 p-2 bg-gray-50 rounded-lg">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`p-2 rounded-lg ${
+                    msg.role === 'user' 
+                      ? 'bg-blue-100 ml-auto max-w-[80%]' 
+                      : 'bg-gray-100 mr-auto max-w-[80%]'
+                  }`}
+                >
+                  {msg.content}
                 </div>
               ))}
+              {messages.length === 0 && (
+                <div className="text-center text-gray-500 py-4">
+                  No messages yet. Start a conversation!
+                </div>
+              )}
             </div>
           </div>
-
-          <div className="pt-4">
-            <Progress 
-              value={(bot.storageUsed / bot.storageLimit) * 100} 
-              className="h-1.5 bg-[#2463EB]/20 [&>[role=progressbar]]:bg-[#2463EB]"
-            />
-            <p className="text-xs text-gray-600 mt-1">Storage Usage</p>
-          </div>
+          
+          <ChatInput
+            message={message}
+            onMessageChange={setMessage}
+            onSend={handleSendMessage}
+          />
+          <StorageUsage
+            storageUsed={bot.storageUsed || 0}
+            storageLimit={bot.storageLimit || 1}
+          />
         </div>
       </CardContent>
     </Card>
