@@ -11,7 +11,7 @@ interface StorageCardProps {
 
 export const StorageCard = ({ storagePercentage, totalStorageUsed, totalStorageLimit }: StorageCardProps) => {
   return (
-    <Card className="mb-8 bg-white shadow-lg animate-fade-up">
+    <Card className="mb-8 bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] animate-fade-up">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-lg font-medium text-[#2463EB]">Storage Usage</CardTitle>
         <Database className="h-4 w-4 text-[#2463EB]" />

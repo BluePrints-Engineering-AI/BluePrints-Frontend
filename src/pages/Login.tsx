@@ -85,7 +85,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="relative bg-black rounded-md shadow-md">
-        <Card className="w-full max-w-md p-6 space-y-6 relative bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)]">
+        <Card className="w-full max-w-md p-6 space-y-6 relative bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] border-blue-300">
           <div className="text-center">
             <h2 className="text-2xl font-bold">
               Welcome to 
@@ -97,7 +97,7 @@ const Login = () => {
           <div className="space-y-4">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full border-border"
               onClick={() => handleOAuthLogin('discord')}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
@@ -106,7 +106,7 @@ const Login = () => {
             
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full border-border"
               onClick={() => handleOAuthLogin('github')}
             >
               <Github className="mr-2 h-4 w-4" />
@@ -126,7 +126,7 @@ const Login = () => {
 
             <form onSubmit={handleEmailLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-input">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -137,7 +137,7 @@ const Login = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-input">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -151,7 +151,7 @@ const Login = () => {
                 <Button 
                   type="submit" 
                   variant="outline"
-                  className="w-full" 
+                  className="w-full border-border" 
                   disabled={loading}
                 >
                   <Mail className="mr-2 h-4 w-4" />
@@ -160,7 +160,7 @@ const Login = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-border"
                   onClick={handleSignUp}
                   disabled={loading}
                 >

@@ -156,7 +156,7 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
 
   return (
     <Card 
-      className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-up"
+      className="bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] hover:shadow-xl transition-all duration-300 animate-fade-up"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <ChatBotHeader
@@ -181,21 +181,21 @@ export const ChatBotCard = ({ bot, index, onUpdate, onDelete }: ChatBotCardProps
           <DocumentsList documents={bot.documents} />
           
           <div className="space-y-2">
-            <div className="h-48 overflow-y-auto space-y-2 p-2 bg-gray-50 rounded-lg">
+            <div className="h-48 overflow-y-auto space-y-2 p-2 bg-card rounded-lg">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`p-2 rounded-lg ${
                     msg.role === 'user' 
-                      ? 'bg-blue-100 ml-auto max-w-[80%]' 
-                      : 'bg-gray-100 mr-auto max-w-[80%]'
+                      ? 'bg-blue-100 dark:bg-blue-900 dark:text-blue-100 ml-auto max-w-[80%]' 
+                      : 'bg-gray-100 dark:bg-gray-800 dark:text-gray-200 mr-auto max-w-[80%]'
                   }`}
                 >
                   {msg.content}
                 </div>
               ))}
               {messages.length === 0 && (
-                <div className="text-center text-gray-500 py-4">
+                <div className="text-center text-gray-500 dark:text-gray-400 py-4">
                   No messages yet. Start a conversation!
                 </div>
               )}

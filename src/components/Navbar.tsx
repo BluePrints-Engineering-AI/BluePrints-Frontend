@@ -43,7 +43,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
             <div className="flex items-center space-x-8">
               <Link 
                 to={isAuthenticated ? "/dashboard" : "/"} 
-                className="text-xl font-semibold text-blue-600 pl-0"
+                className="text-xl font-bold text-blue-600 pl-0"
               >
                 BluePrints
               </Link>

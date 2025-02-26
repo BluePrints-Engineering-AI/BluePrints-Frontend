@@ -13,8 +13,8 @@ const Index = () => {
             Revolutionizing Engineering Documentation!
           </p>
           <h1 className="text-5xl font-bold tracking-tight sm:text-6xl mb-8 animate-fade-up">
-            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.65)]">Your Documents,</span>{" "}
-            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.65)] text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
+            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.55)]">Your Documents,</span>{" "}
+            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.55)] text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
               Intelligently Enhanced
             </span>
           </h1>
