@@ -4,17 +4,17 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mb-8 animate-fade-down">
+          <p className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-card mb-8 animate-fade-down">
             <Rocket className="w-4 h-4 mr-2" />
-            Revolutionizing Engineering Documentation
+            Revolutionizing Engineering Documentation!
           </p>
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-8 animate-fade-up">
-            Your Documents,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
+          <h1 className="text-5xl font-bold tracking-tight sm:text-6xl mb-8 animate-fade-up">
+            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.65)]">Your Documents,</span>{" "}
+            <span className="[text-shadow:_0_0_80px_rgba(59,130,246,0.65)] text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
               Intelligently Enhanced
             </span>
           </h1>
@@ -27,7 +27,7 @@ const Index = () => {
               <ButtonPremium size="lg">Get Started for Free</ButtonPremium>
             </Link>
             <a href="https://www.youtube.com/watch?v=0P4ooL6UkiQ&t=3s" target="_blank" rel="noopener noreferrer">
-              <ButtonPremium size="lg" variant="outline">
+              <ButtonPremium size="lg" variant="outline" className="bg-card hover:bg-card/90">
                 Watch Demo
               </ButtonPremium>
             </a>
@@ -36,15 +36,15 @@ const Index = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="p-8 rounded-2xl bg-gradient-to-b from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-8 rounded-2xl bg-card shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
                 <FileText className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Smart Document Upload</h3>
+              <h3 className="text-xl font-semibold mb-4">Smart Document Upload</h3>
               <p className="text-gray-600">
                 Upload and organize your engineering documentation with automatic metadata
                 extraction and intelligent categorization.
@@ -52,11 +52,11 @@ const Index = () => {
             </div>
 
             {/* Feature 2 */}
-            <div className="p-8 rounded-2xl bg-gradient-to-b from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-8 rounded-2xl bg-card shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
                 <Search className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Multimodal Search</h3>
+              <h3 className="text-xl font-semibold mb-4">Multimodal Search</h3>
               <p className="text-gray-600">
                 Find exactly what you need with our powerful semantic search across
                 text, images, and diagrams.
@@ -64,11 +64,11 @@ const Index = () => {
             </div>
 
             {/* Feature 3 */}
-            <div className="p-8 rounded-2xl bg-gradient-to-b from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-8 rounded-2xl bg-card shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
                 <MessageSquare className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">AI-Powered Chat</h3>
+              <h3 className="text-xl font-semibold mb-4">AI-Powered Chat</h3>
               <p className="text-gray-600">
                 Get instant answers and insights from your documents through our
                 intelligent chatbot.
@@ -79,17 +79,17 @@ const Index = () => {
       </div>
 
       {/* Why BluePrints Section */}
-      <div className="py-20 bg-gradient-to-b from-white to-blue-50">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose BluePrints?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose BluePrints?</h2>
             <p className="text-xl text-gray-600">
               Built specifically for teams working on robotics and engineering design
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <Users className="w-10 h-10 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Enhanced Collaboration</h3>
               <p className="text-gray-600">
@@ -97,7 +97,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <Brain className="w-10 h-10 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Multimodal Analysis</h3>
               <p className="text-gray-600">
@@ -105,7 +105,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <Clock className="w-10 h-10 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Faster Onboarding</h3>
               <p className="text-gray-600">
@@ -113,7 +113,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <Rocket className="w-10 h-10 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Free for FRC Students</h3>
               <p className="text-gray-600">
@@ -125,17 +125,17 @@ const Index = () => {
       </div>
 
       {/* Integrations Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Seamless Integration</h2>
+            <h2 className="text-3xl font-bold mb-4">Seamless Integration</h2>
             <p className="text-xl text-gray-600">
               Connect BluePrints with your favorite collaboration tools
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
+            <div className="p-8 bg-card rounded-xl shadow-sm flex items-center space-x-4">
               <div className="w-12 h-12 bg-[#4A154B] rounded-lg flex items-center justify-center">
                 <Slack className="w-6 h-6 text-white" />
               </div>
@@ -145,7 +145,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="p-8 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
+            <div className="p-8 bg-card rounded-xl shadow-sm flex items-center space-x-4">
               <div className="w-12 h-12 bg-[#5865F2] rounded-lg flex items-center justify-center">
                 <MessageCircle className="w-6 h-6 text-white" />
               </div>
@@ -159,17 +159,17 @@ const Index = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-20 bg-gradient-to-b from-white to-blue-50">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold  mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600">
               Everything you need to know about BluePrints
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <HelpCircle className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold">What types of documents can I upload?</h3>
@@ -179,7 +179,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <HelpCircle className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold">How does the AI chat work?</h3>
@@ -189,7 +189,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <HelpCircle className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold">Is it free for FRC teams?</h3>
@@ -199,7 +199,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-white rounded-xl shadow-sm">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-4">
                 <HelpCircle className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold">How secure is my data?</h3>
