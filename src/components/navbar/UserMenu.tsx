@@ -23,20 +23,20 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-        <span className="text-gray-700">{profile.first_name || 'User'}</span>
+      <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200">
+        <span className="text-card-foreground">{profile.first_name || 'User'}</span>
         <ChevronDown className="w-4 h-4 text-gray-500" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48">
-        <DropdownMenuItem onClick={() => navigate('/profile')}>
+        <DropdownMenuItem className="hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" onClick={() => navigate('/profile')}>
           <User className="mr-2 h-5 w-5" />
           <span>Edit Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onUpdateTier(profile.tier === 'free' ? 'premium' : 'free')}>
+        <DropdownMenuItem className="hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" onClick={() => onUpdateTier(profile.tier === 'free' ? 'premium' : 'free')}>
           <Settings className="mr-2 h-5 w-5" />
           <span>Switch to {profile.tier === 'free' ? 'Premium' : 'Free'}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => {
+        <DropdownMenuItem className="hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" onClick={() => {
           const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
           setTheme(nextTheme);
         }}>
@@ -49,7 +49,7 @@ export const UserMenu = ({ profile, onSignOut, onUpdateTier }: UserMenuProps) =>
           )}
           <span>Theme: {theme.charAt(0).toUpperCase() + theme.slice(1)}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onSignOut}>
+        <DropdownMenuItem className="hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" onClick={onSignOut}>
           <LogOut className="mr-2 h-5 w-5" />
           <span>Sign out</span>
         </DropdownMenuItem>

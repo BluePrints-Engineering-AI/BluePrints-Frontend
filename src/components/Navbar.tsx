@@ -60,14 +60,14 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
             <div className="hidden md:flex items-center space-x-8">
               <Link
                 to="/pricing"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors"
               >
                 Pricing
               </Link>
               {isAuthenticated ? (
                 <Link
                   to="/dashboard"
-                  className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
+                  className="text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2"
                 >
                   <MessageSquare className="w-4 h-4" />
                   Dashboard

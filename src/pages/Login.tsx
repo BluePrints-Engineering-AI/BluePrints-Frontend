@@ -97,7 +97,7 @@ const Login = () => {
           <div className="space-y-4">
             <Button
               variant="outline"
-              className="w-full border-border"
+              className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
               onClick={() => handleOAuthLogin('discord')}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
@@ -106,7 +106,7 @@ const Login = () => {
             
             <Button
               variant="outline"
-              className="w-full border-border"
+              className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
               onClick={() => handleOAuthLogin('github')}
             >
               <Github className="mr-2 h-4 w-4" />
@@ -151,7 +151,7 @@ const Login = () => {
                 <Button 
                   type="submit" 
                   variant="outline"
-                  className="w-full border-border" 
+                  className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" 
                   disabled={loading}
                 >
                   <Mail className="mr-2 h-4 w-4" />
@@ -160,7 +160,7 @@ const Login = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full border-border"
+                  className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
                   onClick={handleSignUp}
                   disabled={loading}
                 >
