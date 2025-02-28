@@ -34,6 +34,7 @@ export function UserOnboardingForm({ onComplete }: { onComplete: () => void }) {
           last_name: values.lastName,
           company: values.company || null,
           tier: 'free' as const,
+          theme: 'system' as const,
         })
         .eq("id", user.id);
 

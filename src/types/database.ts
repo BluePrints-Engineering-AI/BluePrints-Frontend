@@ -12,6 +12,7 @@ export interface Profile {
   provider: string | null;
   avatar_url?: string | null;
   full_name?: string | null;
+  theme: 'system' | 'light' | 'dark'
 }
 
 export interface ChatBot {

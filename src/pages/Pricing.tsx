@@ -34,20 +34,27 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-4">
+    <div className="min-h-screen bg-background pt-24 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-7">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-muted-foreground">
             Choose the plan that's right for you
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
-            <Card key={index} className={`border ${plan.name === 'Premium' ? 'border-blue-200 shadow-blue-100' : 'border-blue-100'}`}>
+            <Card 
+              key={index} 
+              className={`relative bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] ${
+                plan.name === 'Premium' 
+                  ? 'border-blue-200' 
+                  : 'border-blue-100'
+              }`}
+            >
               <CardHeader>
                 <CardTitle>{plan.name}</CardTitle>
                 <CardDescription>{plan.description}</CardDescription>

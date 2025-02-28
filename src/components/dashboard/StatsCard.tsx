@@ -11,7 +11,7 @@ interface StatsCardProps {
 
 export const StatsCard = ({ title, value, Icon, className = "" }: StatsCardProps) => {
   return (
-    <Card className={`bg-white shadow-lg hover:shadow-xl transition-shadow animate-fade-up ${className}`}>
+    <Card className={`bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] hover:shadow-xl transition-shadow animate-fade-up ${className}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-[#2463EB]">{title}</CardTitle>
         <Icon className="h-4 w-4 text-[#2463EB]" />
