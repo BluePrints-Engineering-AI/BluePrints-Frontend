@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
-import { Menu, X, MessageSquare } from "lucide-react";
+import { Menu, X, MessageSquare, Bot } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useProfile } from "@/hooks/use-profile";
@@ -58,6 +58,13 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
+              <Link
+                to="/robodocs"
+                className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4" />
+                RoboDocs
+              </Link>
               <Link
                 to="/pricing"
                 className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors"

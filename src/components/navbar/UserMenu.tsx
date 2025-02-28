@@ -1,4 +1,3 @@
-
 import { Settings, LogOut, ChevronDown, User, Moon, Sun } from "lucide-react";
 import type { Profile } from "@/types/database";
 import { useTheme } from "@/components/theme/ThemeProvider";
