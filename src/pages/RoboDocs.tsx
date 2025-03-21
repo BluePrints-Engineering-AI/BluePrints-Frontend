@@ -9,6 +9,7 @@ interface Message {
   content: string;
   role: 'user' | 'assistant';
   type: 'text' | 'image';
+  feedback?: 'like' | 'dislike';
 }
 
 const RoboDocs = () => {
@@ -24,7 +25,6 @@ const RoboDocs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const responseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [lastMessageId, setLastMessageId] = useState<string>('1');
 
   // Scroll to bottom when messages change
@@ -59,47 +59,32 @@ const RoboDocs = () => {
     
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
-    setIsLoading(true);
     
     // Store input for later use
     const currentInput = input.trim();
     
-    // Simulate bot response with a delay
-    responseTimeoutRef.current = setTimeout(() => {
-      // Randomly decide if response should be text or image (80% text, 20% image)
-      const isImageResponse = Math.random() < 0.2;
-      
-      let botMessage: Message;
-      
-      if (isImageResponse) {
-        botMessage = {
-          id: (Date.now() + 1).toString(),
-          // Use a placeholder image
-          content: 'https://via.placeholder.com/400x300?text=RoboDocs+Image+Response',
-          role: 'assistant',
-          type: 'image'
-        };
-      } else {
-        botMessage = {
-          id: (Date.now() + 1).toString(),
-          content: `I received your message: "${currentInput}". This is a placeholder response. In a real implementation, this would connect to an AI service.`,
-          role: 'assistant',
-          type: 'text'
-        };
-      }
-      
-      setMessages((prev) => [...prev, botMessage]);
-      setIsLoading(false);
-      responseTimeoutRef.current = null;
-    }, 1000);
-  };
-
-  const handleStopResponse = () => {
-    if (responseTimeoutRef.current) {
-      clearTimeout(responseTimeoutRef.current);
-      responseTimeoutRef.current = null;
+    // Generate response immediately without delay
+    const isImageResponse = Math.random() < 0.2;
+    
+    let botMessage: Message;
+    
+    if (isImageResponse) {
+      botMessage = {
+        id: (Date.now() + 1).toString(),
+        content: 'https://via.placeholder.com/400x300?text=RoboDocs+Image+Response',
+        role: 'assistant',
+        type: 'image'
+      };
+    } else {
+      botMessage = {
+        id: (Date.now() + 1).toString(),
+        content: `I received your message: "${currentInput}". This is a placeholder response. In a real implementation, this would connect to an AI service.`,
+        role: 'assistant',
+        type: 'text'
+      };
     }
-    setIsLoading(false);
+    
+    setMessages((prev) => [...prev, botMessage]);
   };
 
   const handleCopyMessage = (content: string) => {
@@ -107,13 +92,31 @@ const RoboDocs = () => {
   };
 
   const handleApproveMessage = (id: string) => {
-    // In a real app, you would send this feedback to your backend
-    console.log(`Message ${id} approved`);
+    // Update message feedback - toggle if already liked
+    setMessages(prev => 
+      prev.map(msg => {
+        if (msg.id === id) {
+          // If already liked, remove feedback, otherwise set to like
+          return { ...msg, feedback: msg.feedback === 'like' ? undefined : 'like' };
+        }
+        return msg;
+      })
+    );
+    console.log(`Message ${id} feedback updated`);
   };
 
   const handleDisapproveMessage = (id: string) => {
-    // In a real app, you would send this feedback to your backend
-    console.log(`Message ${id} disapproved`);
+    // Update message feedback - toggle if already disliked
+    setMessages(prev => 
+      prev.map(msg => {
+        if (msg.id === id) {
+          // If already disliked, remove feedback, otherwise set to dislike
+          return { ...msg, feedback: msg.feedback === 'dislike' ? undefined : 'dislike' };
+        }
+        return msg;
+      })
+    );
+    console.log(`Message ${id} feedback updated`);
   };
 
   return (
@@ -180,7 +183,7 @@ const RoboDocs = () => {
                         onClick={() => handleApproveMessage(msg.id)}
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
+                        className={`h-6 w-6 ${msg.feedback === 'like' ? 'text-green-600' : ''}`}
                       >
                         <ThumbsUp className="h-3 w-3" />
                       </Button>
@@ -188,7 +191,7 @@ const RoboDocs = () => {
                         onClick={() => handleDisapproveMessage(msg.id)}
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
+                        className={`h-6 w-6 ${msg.feedback === 'dislike' ? 'text-red-600' : ''}`}
                       >
                         <ThumbsDown className="h-3 w-3" />
                       </Button>
@@ -196,15 +199,6 @@ const RoboDocs = () => {
                   )}
                 </div>
               ))}
-              {isLoading && (
-                <div className="mr-auto bg-gray-100 dark:bg-gray-800 dark:text-gray-200 p-3 rounded-lg">
-                  <div className="flex space-x-2 items-center">
-                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-pulse"></div>
-                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  </div>
-                </div>
-              )}
               <div ref={messagesEndRef} />
             </div>
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl mx-auto px-4">
@@ -221,24 +215,13 @@ const RoboDocs = () => {
                     }
                   }}
                   className="flex-1"
-                  disabled={isLoading}
                 />
                 <Button 
-                  onClick={isLoading ? handleStopResponse : handleSendMessage} 
-                  disabled={isLoading ? false : !input.trim()}
-                  className={`transition-all duration-200 w-10 p-0 ${
-                    isLoading 
-                      ? 'bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900 dark:hover:bg-red-800 dark:text-red-300' 
-                      : 'hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300'
-                  }`}
+                  onClick={handleSendMessage} 
+                  disabled={!input.trim()}
+                  className="transition-all duration-200 w-10 p-0 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300"
                 >
-                  {isLoading ? (
-                    <div className="h-4 w-4 relative">
-                      <div className="absolute inset-0 rounded-sm bg-current"></div>
-                    </div>
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
             </div>
