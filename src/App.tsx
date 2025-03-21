@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Usage from "./pages/Usage";
+import RoboDocs from './pages/RoboDocs';
 import { UserOnboardingForm } from './components/UserOnboardingForm';
 
 const queryClient = new QueryClient();
@@ -78,6 +79,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/features" element={<Features />} />
+            <Route path="/robodocs" element={<RoboDocs />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route 
               path="/login" 

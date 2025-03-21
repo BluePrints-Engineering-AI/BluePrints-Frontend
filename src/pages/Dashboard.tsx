@@ -84,7 +84,7 @@ const Dashboard = () => {
   }, 0);
 
   return (
-    <div className="container mx-auto px-4 py-24 bg-gradient-to-b from-white to-[#2463EB]/5">
+    <div className="container mx-auto px-4 py-24 bg-background">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-[#2463EB]">Dashboard</h1>
         <Button 

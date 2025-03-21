@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ButtonPremium } from "./ui/button-premium";
-import { Menu, X, MessageSquare } from "lucide-react";
+import { Menu, X, MessageSquare, Bot } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useProfile } from "@/hooks/use-profile";
@@ -36,14 +36,14 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-blue-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background backdrop-blur-lg border-b border-blue-100">
       <div className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
               <Link 
                 to={isAuthenticated ? "/dashboard" : "/"} 
-                className="text-xl font-semibold text-blue-600 pl-0"
+                className="text-xl font-bold text-blue-600 pl-0"
               >
                 BluePrints
               </Link>
@@ -59,15 +59,22 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <Link
+                to="/robodocs"
+                className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4" />
+                RoboDocs
+              </Link>
+              <Link
                 to="/pricing"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors"
               >
                 Pricing
               </Link>
               {isAuthenticated ? (
                 <Link
                   to="/dashboard"
-                  className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2"
+                  className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2"
                 >
                   <MessageSquare className="w-4 h-4" />
                   Dashboard
