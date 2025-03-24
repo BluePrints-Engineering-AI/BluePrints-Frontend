@@ -1,86 +1,21 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
-import { Github, Mail, MessageCircle } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { Github, Mail, MessageCircle } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const Login = () => {
+  const { handleEmailLogin, handleSignUp, handleOAuthLogin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      navigate('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuthLogin = async (provider: 'github' | 'discord') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    }
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      if (error) throw error;
-      toast({
-        title: "Success",
-        description: "Check your email for the confirmation link",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -88,26 +23,28 @@ const Login = () => {
         <Card className="w-full max-w-md p-6 space-y-6 relative bg-card shadow-[0_0_40px_rgba(59,130,246,0.15)] border-blue-300">
           <div className="text-center">
             <h2 className="text-2xl font-bold">
-              Welcome to 
+              Welcome to
               <span className="text-blue-600"> BluePrints</span>
             </h2>
-            <p className="mt-2 text-sm text-gray-600">Sign in or create an account</p>
+            <p className="mt-2 text-sm text-gray-600">
+              Sign in or create an account
+            </p>
           </div>
 
           <div className="space-y-4">
             <Button
               variant="outline"
               className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
-              onClick={() => handleOAuthLogin('discord')}
+              onClick={() => handleOAuthLogin("discord")}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
               Continue with Discord
             </Button>
-            
+
             <Button
               variant="outline"
               className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
-              onClick={() => handleOAuthLogin('github')}
+              onClick={() => handleOAuthLogin("github")}
             >
               <Github className="mr-2 h-4 w-4" />
               Continue with GitHub
@@ -124,9 +61,18 @@ const Login = () => {
               </div>
             </div>
 
-            <form onSubmit={handleEmailLogin} className="space-y-4">
+            <form
+              onSubmit={(e) =>
+                handleEmailLogin(e, email, password).then(() =>
+                  navigate("/dashboard")
+                )
+              }
+              className="space-y-4"
+            >
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-input">Email</Label>
+                <Label htmlFor="email" className="text-input">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -137,21 +83,23 @@ const Login = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-input">Password</Label>
+                <Label htmlFor="password" className="text-input">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder='********'
+                  placeholder="********"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-4">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   variant="outline"
-                  className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200" 
+                  className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
                   disabled={loading}
                 >
                   <Mail className="mr-2 h-4 w-4" />
@@ -161,7 +109,7 @@ const Login = () => {
                   type="button"
                   variant="outline"
                   className="w-full border-border hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 transition-all duration-200"
-                  onClick={handleSignUp}
+                  onClick={(e) => handleSignUp(e, email, password)}
                   disabled={loading}
                 >
                   Create Account
