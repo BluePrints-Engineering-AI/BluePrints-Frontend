@@ -80,7 +80,7 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
                   Dashboard
                 </Link>
               ) : (
-                <ButtonPremium size="default" onClick={() => navigate('/login')}>
+                <ButtonPremium size="default" onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSf3CrgllNvWEN4ny0sBAgVNUHTCd_AoVgXM07wrGfFFksklxQ/viewform?usp=header', '_blank')}>
                   Get Started
                 </ButtonPremium>
               )}

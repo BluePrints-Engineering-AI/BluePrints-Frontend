@@ -124,7 +124,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Integrations Section */}
+      {/* Integrations Section
       <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -156,7 +156,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* FAQ Section */}
       <div className="py-20 bg-background">
@@ -207,6 +207,88 @@ const Index = () => {
               <p className="text-gray-600">
                 We use industry-standard encryption and security practices to ensure your documentation and data remain private and secure.
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Meet the Team Section */}
+      <div className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Meet the Team</h2>
+            <p className="text-xl text-gray-600">
+              The people behind BluePrints
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {/* Team Member 1 */}
+            <div className="flex flex-col items-center">
+              <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
+                {/* Replace with actual image */}
+                <img 
+                  src="/placeholder-team-1.jpg" 
+                  alt="Team Member 1"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-semibold">Yash Chitamber</h3>
+              <p className="text-gray-600">From team 3482</p>
+            </div>
+
+            {/* Team Member 2 */}
+            <div className="flex flex-col items-center">
+              <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
+                {/* Replace with actual image */}
+                <img 
+                  src="/placeholder-team-2.jpg" 
+                  alt="Team Member 2"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-semibold">Luke</h3>
+              <p className="text-gray-600">From team 3482</p>
+            </div>
+
+            {/* Team Member 3 */}
+            <div className="flex flex-col items-center">
+              <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
+                {/* Replace with actual image */}
+                <img 
+                  src="/placeholder-team-3.jpg" 
+                  alt="Team Member 3"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-semibold">Steven Zhang</h3>
+              <p className="text-gray-600">From team 1678</p>
+            </div>
+
+            {/* Team Member 4 */}
+            <div className="flex flex-col items-center">
+              <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
+                {/* Replace with actual image */}
+                <img 
+                  src="/placeholder-team-4.jpg" 
+                  alt="Team Member 4"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-semibold">Jayden Dhaliwal</h3>
+              <p className="text-gray-600">From 2073</p>
             </div>
           </div>
         </div>
