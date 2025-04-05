@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Add Supabase config to gitignore
+supabase/config.toml
