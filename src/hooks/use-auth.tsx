@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -19,11 +20,23 @@ interface AuthContextType {
     password: string
   ) => Promise<void>;
   handleOAuthLogin: (provider: OAuthProvider) => Promise<void>;
+  roboDocsChat: (message: string) => Promise<RoboDocsResponse>;
 }
 interface Profile {
   first_name: string;
 }
+interface RoboDocsResponse {
+  error?: string;
+  response?: RoboDocsData;
+}
+interface RoboDocsData {
+  context?: any;
+  question?: string;
+  response?: string;
+}
 type OAuthProvider = "github" | "discord";
+
+const url = import.meta.env.VITE_ROBO_DOCS_BACKEND_URL;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -148,6 +161,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   };
+  const roboDocsChat = async (message: string): Promise<RoboDocsResponse> => {
+    if (session == null || session.access_token == null) {
+      return { error: "access token invalid" };
+    }
+    const body = { question: message };
+
+    return axios
+      .post(url, body, {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((response) => {
+        return { response: response.data };
+      })
+      .catch((e) => {
+        return {
+          error: e,
+        };
+      });
+  };
 
   return (
     <AuthContext.Provider
@@ -159,6 +195,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         handleEmailLogin: handleEmailLogin,
         handleSignUp: handleSignUp,
         handleOAuthLogin: handleOAuthLogin,
+        roboDocsChat: roboDocsChat,
       }}
     >
       {children}

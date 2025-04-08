@@ -1,35 +1,44 @@
-import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Bot, Send, Image as ImageIcon, Copy, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Bot,
+  Send,
+  Image as ImageIcon,
+  Copy,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface Message {
   id: string;
   content: string;
-  role: 'user' | 'assistant';
-  type: 'text' | 'image';
-  feedback?: 'like' | 'dislike';
+  role: "user" | "assistant";
+  type: "text" | "image";
+  feedback?: "like" | "dislike";
 }
 
 const RoboDocs = () => {
+  const { roboDocsChat } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      content: 'Hello! I\'m RoboDocs. How can I help you today?',
-      role: 'assistant',
-      type: 'text'
+      id: "1",
+      content: "Hello! I'm RoboDocs. How can I help you today?",
+      role: "assistant",
+      type: "text",
     },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [lastMessageId, setLastMessageId] = useState<string>('1');
+  const [lastMessageId, setLastMessageId] = useState<string>("1");
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Focus input when loading state changes
@@ -48,42 +57,42 @@ const RoboDocs = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
-    
+
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input.trim(),
-      role: 'user',
-      type: 'text'
+      role: "user",
+      type: "text",
     };
-    
+
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    
+    setInput("");
+
     // Store input for later use
     const currentInput = input.trim();
-    
-    // Generate response immediately without delay
-    const isImageResponse = Math.random() < 0.2;
-    
+
+    const { error, response } = await roboDocsChat(currentInput);
+
     let botMessage: Message;
-    
-    if (isImageResponse) {
+
+    if (error) {
+      console.error("Error processing request: ", error);
       botMessage = {
         id: (Date.now() + 1).toString(),
-        content: 'https://via.placeholder.com/400x300?text=RoboDocs+Image+Response',
-        role: 'assistant',
-        type: 'image'
+        content: "There was an error processing your request.",
+        role: "assistant",
+        type: "text",
       };
     } else {
       botMessage = {
         id: (Date.now() + 1).toString(),
-        content: `I received your message: "${currentInput}". This is a placeholder response. In a real implementation, this would connect to an AI service.`,
-        role: 'assistant',
-        type: 'text'
+        content: response.response ?? "Response is null",
+        role: "assistant",
+        type: "text",
       };
     }
-    
+
     setMessages((prev) => [...prev, botMessage]);
   };
 
@@ -93,11 +102,14 @@ const RoboDocs = () => {
 
   const handleApproveMessage = (id: string) => {
     // Update message feedback - toggle if already liked
-    setMessages(prev => 
-      prev.map(msg => {
+    setMessages((prev) =>
+      prev.map((msg) => {
         if (msg.id === id) {
           // If already liked, remove feedback, otherwise set to like
-          return { ...msg, feedback: msg.feedback === 'like' ? undefined : 'like' };
+          return {
+            ...msg,
+            feedback: msg.feedback === "like" ? undefined : "like",
+          };
         }
         return msg;
       })
@@ -107,11 +119,14 @@ const RoboDocs = () => {
 
   const handleDisapproveMessage = (id: string) => {
     // Update message feedback - toggle if already disliked
-    setMessages(prev => 
-      prev.map(msg => {
+    setMessages((prev) =>
+      prev.map((msg) => {
         if (msg.id === id) {
           // If already disliked, remove feedback, otherwise set to dislike
-          return { ...msg, feedback: msg.feedback === 'dislike' ? undefined : 'dislike' };
+          return {
+            ...msg,
+            feedback: msg.feedback === "dislike" ? undefined : "dislike",
+          };
         }
         return msg;
       })
@@ -135,40 +150,42 @@ const RoboDocs = () => {
                 <div
                   key={msg.id}
                   className={`flex flex-col ${
-                    msg.role === 'user' ? 'items-end' : 'items-start'
+                    msg.role === "user" ? "items-end" : "items-start"
                   }`}
                 >
                   <div
                     className={`p-3 rounded-lg inline-block ${
-                      msg.role === 'user'
-                        ? 'bg-blue-100 dark:bg-blue-900 dark:text-blue-100 font-semibold'
-                        : 'bg-gray-100 dark:bg-gray-800 dark:text-gray-200 font-semibold'
+                      msg.role === "user"
+                        ? "bg-blue-100 dark:bg-blue-900 dark:text-blue-100 font-semibold"
+                        : "bg-gray-100 dark:bg-gray-800 dark:text-gray-200 font-semibold"
                     }`}
                   >
-                    {msg.type === 'text' ? (
-                      <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                    {msg.type === "text" ? (
+                      <p className="whitespace-pre-wrap break-words">
+                        {msg.content}
+                      </p>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
                         <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mb-1">
                           <ImageIcon className="h-4 w-4" />
                           <span>Image</span>
                         </div>
-                        <img 
-                          src={msg.content} 
-                          alt="AI generated" 
+                        <img
+                          src={msg.content}
+                          alt="AI generated"
                           className="max-w-full rounded-md"
-                          style={{ maxHeight: '300px' }}
+                          style={{ maxHeight: "300px" }}
                         />
                       </div>
                     )}
                   </div>
-                  
-                  {msg.role === 'assistant' && (
-                    <div 
+
+                  {msg.role === "assistant" && (
+                    <div
                       className={`flex gap-1 mt-1 ${
-                        msg.id === lastMessageId 
-                          ? 'opacity-100' 
-                          : 'opacity-0 group-hover:opacity-100'
+                        msg.id === lastMessageId
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
                       } transition-opacity`}
                     >
                       <Button
@@ -183,7 +200,9 @@ const RoboDocs = () => {
                         onClick={() => handleApproveMessage(msg.id)}
                         variant="ghost"
                         size="icon"
-                        className={`h-6 w-6 ${msg.feedback === 'like' ? 'text-green-600' : ''}`}
+                        className={`h-6 w-6 ${
+                          msg.feedback === "like" ? "text-green-600" : ""
+                        }`}
                       >
                         <ThumbsUp className="h-3 w-3" />
                       </Button>
@@ -191,7 +210,9 @@ const RoboDocs = () => {
                         onClick={() => handleDisapproveMessage(msg.id)}
                         variant="ghost"
                         size="icon"
-                        className={`h-6 w-6 ${msg.feedback === 'dislike' ? 'text-red-600' : ''}`}
+                        className={`h-6 w-6 ${
+                          msg.feedback === "dislike" ? "text-red-600" : ""
+                        }`}
                       >
                         <ThumbsDown className="h-3 w-3" />
                       </Button>
@@ -209,15 +230,15 @@ const RoboDocs = () => {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
+                    if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
                       handleSendMessage();
                     }
                   }}
                   className="flex-1"
                 />
-                <Button 
-                  onClick={handleSendMessage} 
+                <Button
+                  onClick={handleSendMessage}
                   disabled={!input.trim()}
                   className="transition-all duration-200 w-10 p-0 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300"
                 >
