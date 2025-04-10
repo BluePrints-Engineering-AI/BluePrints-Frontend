@@ -228,8 +228,8 @@ const Index = () => {
               <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
                 {/* Replace with actual image */}
                 <img 
-                  src="/placeholder-team-1.jpg" 
-                  alt="Team Member 1"
+                  src="/Yash_Chitamber.jpg" 
+                  alt="Yash Chitamber"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
@@ -245,15 +245,15 @@ const Index = () => {
               <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
                 {/* Replace with actual image */}
                 <img 
-                  src="/placeholder-team-2.jpg" 
-                  alt="Team Member 2"
+                  src="/Luke_Hanuska.jpg" 
+                  alt="Luke Hanuska"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
                   }}
                 />
               </div>
-              <h3 className="text-lg font-semibold">Luke</h3>
+              <h3 className="text-lg font-semibold">Luke Hanuska</h3>
               <p className="text-gray-600">From team 3482</p>
             </div>
 
@@ -262,8 +262,8 @@ const Index = () => {
               <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
                 {/* Replace with actual image */}
                 <img 
-                  src="/placeholder-team-3.jpg" 
-                  alt="Team Member 3"
+                  src="/Steven_Zhang.JPG" 
+                  alt="Steven_Zhang"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
@@ -279,8 +279,8 @@ const Index = () => {
               <div className="w-48 h-48 rounded-xl bg-gray-200 overflow-hidden mb-4">
                 {/* Replace with actual image */}
                 <img 
-                  src="/placeholder-team-4.jpg" 
-                  alt="Team Member 4"
+                  src="BluePrints.png" 
+                  alt="Jayden Dhaliwal"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = `https://via.placeholder.com/300x300?text=Team+Member`;
@@ -288,7 +288,7 @@ const Index = () => {
                 />
               </div>
               <h3 className="text-lg font-semibold">Jayden Dhaliwal</h3>
-              <p className="text-gray-600">From 2073</p>
+              <p className="text-gray-600">From team 2073</p>
             </div>
           </div>
         </div>
