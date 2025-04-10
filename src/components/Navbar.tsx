@@ -58,19 +58,19 @@ const Navbar = ({ isAuthenticated }: { isAuthenticated?: boolean }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/robodocs"
-                className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2"
-              >
-                <Bot className="w-4 h-4" />
-                RoboDocs
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors"
-              >
-                Pricing
-              </Link>
+              {/* <Link */}
+                {/* to="/robodocs" */}
+                {/* className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors flex items-center gap-2" */}
+              {/* > */}
+                {/* <Bot className="w-4 h-4" /> */}
+                {/* RoboDocs */}
+              {/* </Link> */}
+              {/* <Link */}
+                {/* to="/pricing" */}
+                {/* className="text-gray-700 dark:text-[hsl(var(--navbar-text))] hover:text-blue-600 transition-colors" */}
+              {/* > */}
+                {/* Pricing */}
+              {/* </Link> */}
               {isAuthenticated ? (
                 <Link
                   to="/dashboard"
